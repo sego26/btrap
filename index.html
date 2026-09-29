@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bear Trap Planner</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
   :root{
     --bg:#17130f; --bg-panel:#221c16; --bg-raised:#2b241c; --line:#3d3327;
@@ -127,6 +127,13 @@
   .march .lead-note{ font-size:12.5px; color:var(--dim); line-height:1.5; margin:0 0 9px; }
   .calc{ display:inline-block; margin-top:11px; color:var(--gold-bright); font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; text-decoration:none; border:1px solid rgba(232,191,60,0.45); padding:7px 11px; border-radius:4px; }
   .calc:hover{ background:rgba(201,162,39,0.12); }
+  /* Arabic / RTL */
+  html[lang=ar] body, html[lang=ar] h1, html[lang=ar] h2, html[lang=ar] .march .name, html[lang=ar] .opt, html[lang=ar] .copy, html[lang=ar] .calc, html[lang=ar] .ratio-legend, html[lang=ar] .status{ font-family:'Noto Sans Arabic','Inter',sans-serif; }
+  html[lang=ar] *{ letter-spacing:0 !important; }
+  html[dir=rtl] .panel[data-step]::before{ left:auto; right:20px; }
+  html[dir=rtl] .opt{ text-align:right; } html[dir=rtl] .opt .status{ text-align:left; }
+  .ratio, .gens .pill, #sRatio, .cap, .fixed, input[type=number], bdi{ direction:ltr; unicode-bidi:isolate; }
+  html[dir=rtl] .fixed, html[dir=rtl] input[type=number]{ text-align:right; }
   .footnote{ text-align:center; font-size:12px; color:var(--dim); margin-top:28px; line-height:1.6; }
 </style>
 </head>
@@ -134,7 +141,7 @@
 <div class="wrap">
 
   <div class="lang" role="group" aria-label="Language">
-    <button data-lang="en">EN</button><button data-lang="fr">FR</button><button data-lang="es">ES</button><button data-lang="pt">PT</button>
+    <button data-lang="en">EN</button><button data-lang="fr">FR</button><button data-lang="es">ES</button><button data-lang="pt">PT</button><button data-lang="ar">AR</button>
   </div>
 
   <div class="banner">
@@ -367,6 +374,42 @@
       arcWarn:'Arqueiros insuficientes para o seu próprio rally: restam só <b>{have}</b>, menos que os <b>{join}</b> de cada marcha de apoio. Você precisa de <b>+{need}</b> arqueiros para igualar uma marcha de apoio.',
       canFillLow:'✓ apoios OK · rally com poucos arqueiros',
     },
+    ar: {
+      locale:'ar-u-nu-latn', html:'ar', dir:'rtl', docTitle:'مخطط فخ الدب',
+      eyebrow:'Kingshot · صيد الدب', title:'مخطط <span>فخ الدب</span>',
+      sub:'أدخل قواتك، واختر مسيراتك، واحصل على أفضل نسبة يمكنك ملؤها فعلاً — وما تحتاجه لزيادة الرماة.',
+      s1:'القوات المتاحة', inf:'مشاة', cav:'فرسان', arc:'رماة', infL:'مشاة', cavL:'فرسان', arcL:'رماة', eg:'مثال',
+      s2:'الحشد والمسيرات', leadQ:'هل ستقود حشداً أيضاً؟',
+      no:'لا', noSub:'الانضمام إلى حشود الآخرين فقط', yes:'نعم', yesSub:'مسيرة إضافية لقيادة حشدك الخاص',
+      marchQ:'كم مسيرة انضمام يمكنك إرسالها؟', capL:'سعة مسيرة الانضمام', capNote:'الحد الأقصى لكل مسيرة انضمام — ثابت.',
+      s3:'نسبة التشكيل', hint:'اختر النسبة التي تريد استخدامها (مشاة / فرسان / رماة). تبقى النسب الأخرى ظاهرة مع عدد القوات اللازم لكل منها.',
+      targetL:'النسبة المستهدفة · مشاة / فرسان / رماة', empty:'أدخل أعداد قواتك أعلاه لعرض النسب.',
+      s4:'تشكيلتك', statPer:'لكل مسيرة انضمام', statTotal:'القوات المرسلة',
+      copy:'نسخ التشكيلة لدردشة التحالف', copied:'تم النسخ ✓',
+      footnote:'كل مسيرة تستخدم النسبة نفسها لتضرب الدب بكامل قوتها. معدات الأبطال والفتك والأبحاث لا تزال مهمة — استخدم هذا كتقسيم أساسي ثم عدّل في معاينة المسيرة.',
+      infS:'مشاة', cavS:'فرسان', arcS:'رماة',
+      marchNoteRally:'{j} مسيرات انضمام + حشد واحد بقيادتك', marchNoteJoin:'{n} مسيرات انضمام',
+      legend:'مشاة / فرسان / رماة · محسوبة على مسيرات الانضمام', tagFit:'مناسبة لقواتك', tagTarget:'الهدف',
+      fitUnder:'الأقرب إلى نسبتك المستهدفة التي يمكنك إرسالها{after}، بواقع {size} لكل مسيرة انضمام.',
+      fitFull:'الأقرب إلى نسبتك المستهدفة التي تملأ كل مسيرات الانضمام الـ{j} حتى {cap}{after}.',
+      needDesc:'تحتاج مسيرات الانضمام إلى {arc} رماة و{cav} فرسان و{inf} مشاة لـ{j} مسيرات بسعة {cap}{after}.',
+      canFill:'✓ يمكنك ملؤها', need:'ينقصك {list}',
+      plusArc:'+{n} رماة', plusCav:'+{n} فرسان', plusInf:'+{n} مشاة',
+      preview:'معاينة الهدف — تحتاج إلى <b>{list}</b> لملء {j} مسيرات انضمام بنسبة {r}{after2}{extra}.',
+      under:' مسيرات الانضمام {per} بدلاً من {cap} — تحتاج إلى <b>{more}</b> جندي إضافي لملئها.',
+      off:' هذه أقرب نسبة إلى هدفك تسمح بها قواتك.',
+      joinsMsg:'مسيرات الانضمام {how}، كلها بالنسبة نفسها.{off}{under}', joinsFirst:'تُملأ أولاً',
+      reserve:'المتبقي في الاحتياط: {inf} مشاة، {cav} فرسان، {arc} رماة.',
+      leadName:'★ حشدك', joinName:'مسيرة انضمام {i}',
+      copyHead:'فخ الدب — {j} مسيرات انضمام{plus}', copyPlus:' + حشد بقيادتي', copyLead:'حشدي (المتبقي): ', copyEach:'كل مسيرة انضمام ({r}): ',
+      t10:'استخدم <b>قوات T10 فقط</b> — أدخل عدد قوات T10 لكل نوع.',
+      leadRemain:'كل ما يتبقى بعد مسيرات الانضمام يذهب إلى حشدك. أفضل تقسيم يعتمد على إحصائياتك الشخصية.',
+      leadEmpty:'لا يتبقى شيء لحشدك — مسيرات الانضمام تحتاج كل القوات أعلاه.',
+      calcLink:'احسب أفضل نسبة لحشدك (Frakinator) ↗',
+      copyCalc:'حاسبة نسبة الحشد: ',
+      arcWarn:'لا يوجد رماة كافون لحشدك: تبقّى <b>{have}</b> فقط، أقل من <b>{join}</b> في كل مسيرة انضمام. تحتاج إلى <b>+{need}</b> رماة لتعادل مسيرة انضمام.',
+      canFillLow:'✓ الانضمام مكتمل · رماة الحشد قليلون',
+    },
   };
 
   let lang = (() => {
@@ -383,6 +426,7 @@
 
   function applyLang(){
     document.documentElement.lang = L().html;
+    document.documentElement.dir = L().dir || 'ltr';
     document.title = L().docTitle;
     document.querySelectorAll('[data-i]').forEach(el => el.innerHTML = T(el.dataset.i));
     document.querySelectorAll('[data-ph]').forEach(el => el.placeholder = `${T('eg')} ${Number(el.dataset.ph).toLocaleString(L().locale)}`);
@@ -520,7 +564,7 @@
 
     const msgs = [];
     if (!p.ok){
-      msgs.push(`<div class="msg warn">${T('preview', {list:shortTxt(p.short).join(', '), j:joins, r:o.label})}</div>`);
+      msgs.push(`<div class="msg warn">${T('preview', {list:shortTxt(p.short).join(', '), j:joins, r:`<bdi>${o.label}</bdi>`})}</div>`);
     } else {
       const under = per < CAP ? T('under', {per:fmt(per), cap:fmt(CAP), more:fmt(CAP*joins - sum(p.t))}) : '';
       const off = o.fit ? T('off') : '';
