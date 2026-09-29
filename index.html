@@ -229,8 +229,8 @@
       sub:'Enter your troops, pick your marches, and get the best ratio you can actually fill — plus what it takes to push archers higher.',
       s1:'Troops available', inf:'Infantry', cav:'Cavalry', arc:'Archers', infL:'infantry', cavL:'cavalry', arcL:'archers', eg:'e.g.',
       s2:'Rally & marches', leadQ:'Will you also lead a rally?',
-      no:'No', noSub:"Joining others' rallies only", yes:'Yes', yesSub:'One march leads your own rally',
-      marchQ:'How many marches can you send?', capL:'Join march capacity', capNote:'Max per join march — fixed.',
+      no:'No', noSub:"Joining others' rallies only", yes:'Yes', yesSub:'Plus one extra march leading your own rally',
+      marchQ:'How many join marches can you send?', capL:'Join march capacity', capNote:'Max per join march — fixed.',
       s3:'Formation ratio', hint:"Pick the ratio you want to run (Infantry / Cavalry / Archers). The others stay listed, with how many troops you'd need for each.",
       targetL:'Target ratio · Inf / Cav / Arc', empty:'Enter your troop counts above to see ratios.',
       s4:'Your manifest', statPer:'Per join march', statTotal:'Troops committed',
@@ -265,8 +265,8 @@
       sub:"Saisissez vos troupes, choisissez vos marches et obtenez le meilleur ratio que vous pouvez réellement remplir — et ce qu'il faut pour ajouter plus d'archers.",
       s1:'Troupes disponibles', inf:'Infanterie', cav:'Cavalerie', arc:'Archers', infL:'infanterie', cavL:'cavalerie', arcL:'archers', eg:'ex.',
       s2:'Rassemblement et marches', leadQ:'Allez-vous aussi lancer un rassemblement ?',
-      no:'Non', noSub:'Rejoindre uniquement les rassemblements des autres', yes:'Oui', yesSub:'Une marche mène votre propre rassemblement',
-      marchQ:'Combien de marches pouvez-vous envoyer ?', capL:"Capacité d'une marche de renfort", capNote:'Maximum par marche de renfort — fixe.',
+      no:'Non', noSub:'Rejoindre uniquement les rassemblements des autres', yes:'Oui', yesSub:'Plus une marche en plus pour mener votre rassemblement',
+      marchQ:'Combien de marches de renfort pouvez-vous envoyer ?', capL:"Capacité d'une marche de renfort", capNote:'Maximum par marche de renfort — fixe.',
       s3:'Ratio de formation', hint:'Choisissez le ratio à utiliser (Infanterie / Cavalerie / Archers). Les autres restent affichés, avec les troupes nécessaires pour chacun.',
       targetL:'Ratio cible · Inf / Cav / Arc', empty:'Saisissez vos troupes ci-dessus pour voir les ratios.',
       s4:'Votre composition', statPer:'Par marche de renfort', statTotal:'Troupes engagées',
@@ -301,8 +301,8 @@
       sub:'Introduce tus tropas, elige tus marchas y obtén el mejor ratio que realmente puedes llenar — y lo que necesitas para subir los arqueros.',
       s1:'Tropas disponibles', inf:'Infantería', cav:'Caballería', arc:'Arqueros', infL:'infantería', cavL:'caballería', arcL:'arqueros', eg:'ej.',
       s2:'Rally y marchas', leadQ:'¿También vas a liderar un rally?',
-      no:'No', noSub:'Solo unirme a rallies de otros', yes:'Sí', yesSub:'Una marcha lidera tu propio rally',
-      marchQ:'¿Cuántas marchas puedes enviar?', capL:'Capacidad de marcha de unión', capNote:'Máximo por marcha de unión — fijo.',
+      no:'No', noSub:'Solo unirme a rallies de otros', yes:'Sí', yesSub:'Más una marcha extra que lidera tu propio rally',
+      marchQ:'¿Cuántas marchas de unión puedes enviar?', capL:'Capacidad de marcha de unión', capNote:'Máximo por marcha de unión — fijo.',
       s3:'Ratio de formación', hint:'Elige el ratio que quieres usar (Infantería / Caballería / Arqueros). Los demás siguen visibles, con las tropas que necesitarías para cada uno.',
       targetL:'Ratio objetivo · Inf / Cab / Arq', empty:'Introduce tus tropas arriba para ver los ratios.',
       s4:'Tu formación', statPer:'Por marcha de unión', statTotal:'Tropas enviadas',
@@ -337,8 +337,8 @@
       sub:'Informe suas tropas, escolha suas marchas e veja a melhor proporção que você realmente consegue preencher — e o que falta para colocar mais arqueiros.',
       s1:'Tropas disponíveis', inf:'Infantaria', cav:'Cavalaria', arc:'Arqueiros', infL:'infantaria', cavL:'cavalaria', arcL:'arqueiros', eg:'ex.',
       s2:'Rally e marchas', leadQ:'Você também vai liderar um rally?',
-      no:'Não', noSub:'Só entrar nos rallies dos outros', yes:'Sim', yesSub:'Uma marcha lidera seu próprio rally',
-      marchQ:'Quantas marchas você pode enviar?', capL:'Capacidade da marcha de apoio', capNote:'Máximo por marcha de apoio — fixo.',
+      no:'Não', noSub:'Só entrar nos rallies dos outros', yes:'Sim', yesSub:'Mais uma marcha extra liderando seu próprio rally',
+      marchQ:'Quantas marchas de apoio você pode enviar?', capL:'Capacidade da marcha de apoio', capNote:'Máximo por marcha de apoio — fixo.',
       s3:'Proporção da formação', hint:'Escolha a proporção que quer usar (Infantaria / Cavalaria / Arqueiros). As outras continuam listadas, com quantas tropas você precisaria para cada uma.',
       targetL:'Proporção alvo · Inf / Cav / Arq', empty:'Informe suas tropas acima para ver as proporções.',
       s4:'Sua formação', statPer:'Por marcha de apoio', statTotal:'Tropas enviadas',
@@ -458,7 +458,7 @@
   function update(){
     const t = { inf:num('inf'), cav:num('cav'), arc:num('arc') };
     const n = state.marches;
-    const joins = state.rally ? n - 1 : n;
+    const joins = n; // lead rally is an extra march on top
     const genKey = state.gen;
 
     $('capVal').textContent = fmt(CAP);
