@@ -3,654 +3,566 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bear Trap — March Planner</title>
+<title>Bear Trap Planner</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
   :root{
-    --bg: #17130f;
-    --bg-panel: #221c16;
-    --bg-panel-raised: #2b241c;
-    --line: #3d3327;
-    --ember: #d9540d;
-    --ember-bright: #f2792c;
-    --gold: #c9a227;
-    --gold-bright: #e8bf3c;
-    --steel: #7c8a94;
-    --parchment: #ece3d3;
-    --parchment-dim: #a89d8a;
-    --danger: #b8402e;
-    --ok: #6f9b52;
+    --bg:#17130f; --bg-panel:#221c16; --bg-raised:#2b241c; --line:#3d3327;
+    --ember:#d9540d; --ember-bright:#f2792c; --gold:#c9a227; --gold-bright:#e8bf3c;
+    --steel:#7c8a94; --cav:#8a5a3c; --parchment:#ece3d3; --dim:#a89d8a;
+    --danger:#b8402e; --ok:#6f9b52;
   }
-
-  *{ box-sizing: border-box; }
-
-  html, body{
-    margin:0; padding:0;
-    background: var(--bg);
-    color: var(--parchment);
-    font-family: 'Inter', sans-serif;
-  }
-
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:var(--bg); color:var(--parchment); font-family:'Inter',sans-serif; }
   body{
     background-image:
       radial-gradient(circle at 15% 0%, rgba(217,84,13,0.10), transparent 45%),
       radial-gradient(circle at 100% 30%, rgba(201,162,39,0.07), transparent 40%);
-    min-height: 100vh;
-    padding: 48px 20px 80px;
+    min-height:100vh; padding:44px 16px 80px;
   }
+  .wrap{ max-width:780px; margin:0 auto; }
 
-  .wrap{
-    max-width: 780px;
-    margin: 0 auto;
-  }
+  .banner{ text-align:center; margin-bottom:40px; }
+  .eyebrow{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+  h1{ font-family:'Cinzel',serif; font-weight:900; font-size:clamp(30px,6vw,46px); margin:0 0 10px; text-shadow:0 0 30px rgba(217,84,13,0.35); }
+  h1 span{ color:var(--ember-bright); }
+  .sub{ color:var(--dim); font-size:15px; max-width:500px; margin:0 auto; line-height:1.5; }
 
-  /* ---------- Header ---------- */
-  .banner{
-    text-align:center;
-    margin-bottom: 44px;
+  .panel{ background:var(--bg-panel); border:1px solid var(--line); border-radius:6px; padding:26px 22px 24px; margin-bottom:22px; position:relative; }
+  .panel[data-step]::before{
+    content:attr(data-step); position:absolute; top:-12px; left:20px; background:var(--ember); color:#1a1310;
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px; padding:3px 10px; border-radius:3px; letter-spacing:1px;
   }
-  .eyebrow{
-    font-family:'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 10px;
-  }
-  h1{
-    font-family:'Cinzel', serif;
-    font-weight: 900;
-    font-size: clamp(32px, 6vw, 48px);
-    letter-spacing: 1px;
-    margin: 0 0 10px;
-    color: var(--parchment);
-    text-shadow: 0 0 30px rgba(217,84,13,0.35);
-  }
-  h1 span{ color: var(--ember-bright); }
-  .sub{
-    color: var(--parchment-dim);
-    font-size: 15px;
-    max-width: 480px;
-    margin: 0 auto;
-    line-height: 1.5;
-  }
+  .panel h2{ font-family:'Cinzel',serif; font-size:18px; font-weight:700; margin:4px 0 16px; color:var(--gold-bright); }
+  .hint{ font-size:13px; color:var(--dim); line-height:1.55; margin:-6px 0 16px; }
 
-  /* ---------- Panels ---------- */
-  .panel{
-    background: var(--bg-panel);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 26px 26px 28px;
-    margin-bottom: 22px;
-    position: relative;
-  }
-  .panel::before{
-    content: attr(data-step);
-    position:absolute;
-    top: -13px;
-    left: 22px;
-    background: var(--ember);
-    color: #1a1310;
-    font-family:'JetBrains Mono', monospace;
-    font-weight:700;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 3px;
-    letter-spacing: 1px;
-  }
-  .panel h2{
-    font-family:'Cinzel', serif;
-    font-size: 18px;
-    font-weight: 700;
-    margin: 6px 0 18px;
-    color: var(--gold-bright);
-    letter-spacing: 0.4px;
-  }
-
-  /* ---------- Pill toggles ---------- */
   .row{ display:flex; gap:10px; flex-wrap:wrap; }
   .pill{
-    flex:1;
-    min-width: 140px;
-    background: var(--bg-panel-raised);
-    border: 1px solid var(--line);
-    color: var(--parchment-dim);
-    padding: 12px 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align:center;
-    font-size: 14px;
-    font-weight: 600;
-    transition: border-color .15s, color .15s, background .15s;
-    user-select: none;
+    flex:1; min-width:120px; background:var(--bg-raised); border:1px solid var(--line); color:var(--dim);
+    padding:12px 14px; border-radius:5px; cursor:pointer; text-align:center; font-size:14px; font-weight:600;
+    transition:border-color .15s,color .15s,background .15s; user-select:none; font-family:inherit;
   }
-  .pill:hover{ border-color: var(--ember); color: var(--parchment); }
-  .pill.active{
-    background: linear-gradient(180deg, rgba(217,84,13,0.22), rgba(217,84,13,0.08));
-    border-color: var(--ember-bright);
-    color: var(--parchment);
-    box-shadow: inset 0 0 0 1px rgba(242,121,44,0.25);
-  }
-  .pill small{ display:block; font-weight:400; font-size:11.5px; color: var(--parchment-dim); margin-top:3px; }
+  .pill:hover{ border-color:var(--ember); color:var(--parchment); }
+  .pill.active{ background:linear-gradient(180deg,rgba(217,84,13,0.22),rgba(217,84,13,0.08)); border-color:var(--ember-bright); color:var(--parchment); }
+  .pill small{ display:block; font-weight:400; font-size:11.5px; color:var(--dim); margin-top:3px; }
 
-  /* ---------- Number inputs ---------- */
-  .field{ margin-bottom: 16px; }
-  .field:last-child{ margin-bottom:0; }
-  label{
-    display:block;
-    font-size: 12.5px;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: var(--parchment-dim);
-    margin-bottom: 7px;
-    font-weight: 600;
-  }
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:560px){ .grid3{ grid-template-columns:1fr; } }
+  .field{ margin-bottom:16px; } .field:last-child{ margin-bottom:0; }
+  label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:1.2px; color:var(--dim); margin-bottom:7px; font-weight:600; }
   input[type=number]{
-    width:100%;
-    background: var(--bg-panel-raised);
-    border: 1px solid var(--line);
-    color: var(--parchment);
-    font-family:'JetBrains Mono', monospace;
-    font-size: 16px;
-    padding: 11px 13px;
-    border-radius: 5px;
-    outline:none;
-    transition: border-color .15s;
+    width:100%; background:var(--bg-raised); border:1px solid var(--line); color:var(--parchment);
+    font-family:'JetBrains Mono',monospace; font-size:16px; padding:11px 13px; border-radius:5px; outline:none;
   }
-  input[type=number]:focus{ border-color: var(--ember-bright); }
-  input[type=number]::-webkit-inner-spin-button{ opacity: 0.4; }
-
-  .grid3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-  @media (max-width:560px){ .grid3{ grid-template-columns: 1fr; } }
-
+  input[type=number]:focus{ border-color:var(--ember-bright); }
   .troop-label{ display:flex; align-items:center; gap:7px; }
   .swatch{ width:9px; height:9px; border-radius:2px; display:inline-block; }
-  .sw-inf{ background: var(--steel); }
-  .sw-cav{ background: #8a5a3c; }
-  .sw-arc{ background: var(--gold); }
+  .sw-inf{ background:var(--steel); } .sw-cav{ background:var(--cav); } .sw-arc{ background:var(--gold); }
+  .note{ font-size:11.5px; color:var(--dim); margin-top:6px; }
 
-  /* ---------- Ratio presets + sliders ---------- */
-  .presets{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
-  .preset-btn{
-    background: var(--bg-panel-raised);
-    border: 1px solid var(--line);
-    color: var(--parchment-dim);
-    font-family:'JetBrains Mono', monospace;
-    font-size: 12px;
-    padding: 7px 11px;
-    border-radius: 4px;
-    cursor:pointer;
-  }
-  .preset-btn:hover{ border-color: var(--gold); color: var(--parchment); }
-  .preset-btn.active{ border-color: var(--gold-bright); color: var(--gold-bright); background: rgba(201,162,39,0.10); }
+  input[type=range]{ width:100%; -webkit-appearance:none; appearance:none; height:6px; border-radius:3px; background:linear-gradient(90deg,var(--steel),var(--cav)); outline:none; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--parchment); border:2px solid #1a1310; cursor:pointer; }
+  input[type=range]::-moz-range-thumb{ width:16px; height:16px; border-radius:50%; background:var(--parchment); border:2px solid #1a1310; cursor:pointer; }
+  .split-top{ display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); margin-bottom:8px; }
+  .split-top b{ color:var(--parchment); }
 
-  .slider-row{ margin-bottom: 14px; }
-  .slider-row .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:13px; }
-  .slider-row .top .val{ font-family:'JetBrains Mono', monospace; color: var(--parchment); font-weight:700; }
-  input[type=range]{
-    width:100%;
-    -webkit-appearance:none;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--bg-panel-raised);
-    outline:none;
+  /* ratio options */
+  .empty{ text-align:center; color:var(--dim); font-size:14px; padding:18px 0 6px; }
+  .opts{ display:grid; gap:10px; }
+  .opt{
+    display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center;
+    background:var(--bg-raised); border:1px solid var(--line); border-radius:5px; padding:12px 14px; cursor:pointer;
+    text-align:left; color:var(--parchment); font-family:inherit; width:100%;
   }
-  input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none;
-    width:16px; height:16px;
-    border-radius:50%;
-    background: var(--ember-bright);
-    border: 2px solid #1a1310;
-    cursor:pointer;
-    margin-top:-5px;
-  }
-  #rangeInf::-webkit-slider-thumb{ background: var(--steel); }
-  #rangeCav::-webkit-slider-thumb{ background: #b57a52; }
-  #rangeArc::-webkit-slider-thumb{ background: var(--gold-bright); }
+  .opt:hover{ border-color:var(--gold); }
+  .opt.active{ border-color:var(--gold-bright); background:rgba(201,162,39,0.10); box-shadow:inset 0 0 0 1px rgba(232,191,60,0.25); }
+  .opt .ratio{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; }
+  .opt .tag{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1px; text-transform:uppercase; padding:2px 7px; border-radius:3px; margin-left:8px; vertical-align:2px; }
+  .tag.rec{ background:var(--ember); color:#1a1310; }
+  .opt .status{ font-size:12.5px; text-align:right; font-family:'JetBrains Mono',monospace; }
+  .status.ok{ color:#a9c894; } .status.need{ color:#e0968a; }
+  .opt .desc{ grid-column:1 / -1; font-size:12px; color:var(--dim); }
+  .ratio-legend{ font-size:11.5px; color:var(--dim); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
 
-  .ratio-total{
-    font-family:'JetBrains Mono', monospace;
-    font-size:12px;
-    color: var(--parchment-dim);
-    text-align:right;
-    margin-top: -6px;
-  }
-  .ratio-total.bad{ color: var(--danger); }
+  /* results */
+  .summary{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+  @media (max-width:520px){ .summary{ grid-template-columns:1fr; } }
+  .stat{ background:var(--bg-raised); border:1px solid var(--line); border-radius:5px; padding:12px; text-align:center; }
+  .stat .n{ font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--gold-bright); }
+  .stat .l{ font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--dim); margin-top:4px; }
 
-  /* ---------- CTA ---------- */
-  .cta{
-    width:100%;
-    background: linear-gradient(180deg, var(--ember-bright), var(--ember));
-    border: none;
-    color: #1a1310;
-    font-family:'Cinzel', serif;
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: 1px;
-    padding: 15px;
-    border-radius: 5px;
-    cursor:pointer;
-    margin-top: 6px;
-    transition: filter .15s, transform .1s;
-  }
-  .cta:hover{ filter: brightness(1.08); }
-  .cta:active{ transform: translateY(1px); }
+  .msg{ border-radius:5px; padding:12px 15px; font-size:13.5px; margin-bottom:16px; border:1px solid; line-height:1.55; }
+  .msg.ok{ background:rgba(111,155,82,0.10); border-color:rgba(111,155,82,0.4); color:#a9c894; }
+  .msg.warn{ background:rgba(184,64,46,0.10); border-color:rgba(184,64,46,0.45); color:#e0968a; }
+  .msg b{ color:var(--parchment); }
 
-  /* ---------- Results ---------- */
-  #results{ display:none; }
-  .summary-grid{
-    display:grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 22px;
-  }
-  .stat{
-    background: var(--bg-panel-raised);
-    border: 1px solid var(--line);
-    border-radius: 5px;
-    padding: 14px;
-    text-align:center;
-  }
-  .stat .n{
-    font-family:'JetBrains Mono', monospace;
-    font-size: 22px;
-    font-weight:700;
-    color: var(--gold-bright);
-  }
-  .stat .l{
-    font-size: 11px;
-    text-transform:uppercase;
-    letter-spacing: 1px;
-    color: var(--parchment-dim);
-    margin-top: 4px;
-  }
-
-  .banner-msg{
-    border-radius: 5px;
-    padding: 12px 16px;
-    font-size: 13.5px;
-    margin-bottom: 20px;
-    border: 1px solid;
-    line-height:1.5;
-  }
-  .banner-msg.ok{ background: rgba(111,155,82,0.10); border-color: rgba(111,155,82,0.4); color: #a9c894; }
-  .banner-msg.warn{ background: rgba(184,64,46,0.10); border-color: rgba(184,64,46,0.45); color: #e0968a; }
-
-  .march-card{
-    background: var(--bg-panel-raised);
-    border: 1px solid var(--line);
-    border-radius: 5px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-  }
-  .march-card .head{
-    display:flex; justify-content:space-between; align-items:baseline;
-    margin-bottom: 9px;
-  }
-  .march-card .head .name{
-    font-family:'Cinzel', serif;
-    font-weight:700;
-    font-size: 14px;
-    color: var(--parchment);
-  }
-  .march-card .head .name.lead{ color: var(--gold-bright); }
-  .march-card .head .cap{
-    font-family:'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--parchment-dim);
-  }
-  .bar{
-    display:flex;
-    height: 20px;
-    border-radius: 3px;
-    overflow:hidden;
-    margin-bottom: 9px;
-    background: var(--bg);
-  }
+  .march{ background:var(--bg-raised); border:1px solid var(--line); border-radius:5px; padding:13px 15px; margin-bottom:10px; }
+  .march.lead{ border-color:rgba(232,191,60,0.5); }
+  .march .head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px; gap:10px; }
+  .march .name{ font-family:'Cinzel',serif; font-weight:700; font-size:14px; }
+  .march.lead .name{ color:var(--gold-bright); }
+  .march .cap{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); white-space:nowrap; }
+  .bar{ display:flex; height:18px; border-radius:3px; overflow:hidden; margin-bottom:9px; background:var(--bg); }
   .bar div{ height:100%; }
-  .bar .b-inf{ background: var(--steel); }
-  .bar .b-cav{ background: #8a5a3c; }
-  .bar .b-arc{ background: var(--gold); }
+  .b-inf{ background:var(--steel); } .b-cav{ background:var(--cav); } .b-arc{ background:var(--gold); }
+  .breakdown{ display:flex; gap:16px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--dim); }
+  .breakdown b{ color:var(--parchment); }
 
-  .breakdown{
-    display:flex; gap: 16px; flex-wrap:wrap;
-    font-family:'JetBrains Mono', monospace;
-    font-size: 12.5px;
-    color: var(--parchment-dim);
+  .copy{
+    width:100%; margin-top:8px; background:transparent; border:1px solid var(--line); color:var(--parchment);
+    font-family:'JetBrains Mono',monospace; font-size:13px; padding:11px; border-radius:5px; cursor:pointer;
   }
-  .breakdown span b{ color: var(--parchment); }
+  .copy:hover{ border-color:var(--gold); }
 
-  .legend{
-    display:flex; gap:18px; justify-content:center; margin: 4px 0 22px;
-    font-size:12px; color: var(--parchment-dim); flex-wrap:wrap;
-  }
-  .legend .item{ display:flex; align-items:center; gap:6px; }
-
-  .toggle-pill{ width:100%; text-align:left; display:flex; flex-direction:column; }
-  .toggle-pill small{ margin-top:4px; }
-  .toggle-pill.active{ }
-  .toggle-pill:not(.active){ opacity: 0.75; }
-
-  .capacity-note{
-    font-size: 11.5px;
-    color: var(--parchment-dim);
-    margin-top: 6px;
-  }
-
-  .footnote{
-    text-align:center;
-    font-size: 12px;
-    color: var(--parchment-dim);
-    margin-top: 30px;
-    line-height:1.6;
-  }
+  .gens .pill{ min-width:120px; flex:1 1 calc(25% - 10px); padding:11px 8px; font-family:'JetBrains Mono',monospace; }
+  .tag.alt{ background:var(--steel); color:#1a1310; }
+  .opt .ratio{ white-space:nowrap; }
+  @media (max-width:560px){ .opt{ grid-template-columns:1fr; } .opt .status{ text-align:left; } }
+  .lang{ display:flex; justify-content:center; gap:6px; margin-bottom:22px; }
+  .lang button{ background:var(--bg-raised); border:1px solid var(--line); color:var(--dim); font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; padding:6px 11px; border-radius:4px; cursor:pointer; letter-spacing:1px; }
+  .lang button:hover{ border-color:var(--gold); color:var(--parchment); }
+  .lang button.active{ border-color:var(--gold-bright); color:var(--gold-bright); background:rgba(201,162,39,0.10); }
+  .fixed{ background:var(--bg-raised); border:1px dashed var(--line); color:var(--gold-bright); font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:700; padding:11px 13px; border-radius:5px; }
+  .march .lead-note{ font-size:12.5px; color:var(--dim); line-height:1.5; margin:0 0 9px; }
+  .calc{ display:inline-block; margin-top:11px; color:var(--gold-bright); font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; text-decoration:none; border:1px solid rgba(232,191,60,0.45); padding:7px 11px; border-radius:4px; }
+  .calc:hover{ background:rgba(201,162,39,0.12); }
+  .footnote{ text-align:center; font-size:12px; color:var(--dim); margin-top:28px; line-height:1.6; }
 </style>
 </head>
 <body>
-
 <div class="wrap">
 
+  <div class="lang" role="group" aria-label="Language">
+    <button data-lang="en">EN</button><button data-lang="fr">FR</button><button data-lang="es">ES</button><button data-lang="pt">PT</button>
+  </div>
+
   <div class="banner">
-    <div class="eyebrow">Kingshot · Bear Hunt</div>
-    <h1>Bear Trap <span>Rally</span></h1>
-    <p class="sub">Tell it your role, your marches, and what's in your barracks — it lays out exactly how many of each troop to send.</p>
+    <div class="eyebrow" data-i="eyebrow"></div>
+    <h1 data-i="title"></h1>
+    <p class="sub" data-i="sub"></p>
   </div>
 
-  <!-- STEP 1: ROLE -->
+  <!-- 01 TROOPS -->
   <div class="panel" data-step="01">
-    <h2>Your role this hunt</h2>
-    <div class="row">
-      <div class="pill active" data-role="join" onclick="setRole('join')">
-        Joining only
-        <small>Send troops into others' rallies</small>
-      </div>
-      <div class="pill" data-role="lead" onclick="setRole('lead')">
-        Joining + Leading
-        <small>Also open your own rally</small>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 2: MARCHES -->
-  <div class="panel" data-step="02">
-    <h2>March count</h2>
-    <div class="field">
-      <label for="joinMarches">Marches you'll use to join rallies</label>
-      <div class="row">
-        <div class="pill" data-marches="4" onclick="setMarches(4)">4 marches</div>
-        <div class="pill active" data-marches="5" onclick="setMarches(5)">5 marches</div>
-        <div class="pill" data-marches="6" onclick="setMarches(6)">6 marches</div>
-      </div>
-    </div>
-    <div id="leadNote" style="display:none; margin-top: 16px;">
-      <div class="pill toggle-pill active" id="leadExtraToggle" onclick="toggleLeadExtra()">
-        <span id="leadExtraLabel">+1 extra march for leading</span>
-        <small id="leadExtraSub">On — your lead rally adds a march on top of the count above</small>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 3: BARRACKS -->
-  <div class="panel" data-step="03">
-    <h2>Highest Tier (T10) Troops available</h2>
+    <h2 data-i="s1"></h2>
+    <p class="hint" data-i="t10"></p>
     <div class="grid3">
       <div class="field">
-        <label><span class="troop-label"><span class="swatch sw-inf"></span>Infantry</span></label>
-        <input type="number" id="availInf" min="0" step="1000" placeholder="e.g. 200000">
+        <label for="inf"><span class="troop-label"><span class="swatch sw-inf"></span><span data-i="inf"></span></span></label>
+        <input type="number" id="inf" min="0" step="1000" data-ph="200000">
       </div>
       <div class="field">
-        <label><span class="troop-label"><span class="swatch sw-cav"></span>Cavalry</span></label>
-        <input type="number" id="availCav" min="0" step="1000" placeholder="e.g. 150000">
+        <label for="cav"><span class="troop-label"><span class="swatch sw-cav"></span><span data-i="cav"></span></span></label>
+        <input type="number" id="cav" min="0" step="1000" data-ph="150000">
       </div>
       <div class="field">
-        <label><span class="troop-label"><span class="swatch sw-arc"></span>Archers</span></label>
-        <input type="number" id="availArc" min="0" step="1000" placeholder="e.g. 600000">
+        <label for="arc"><span class="troop-label"><span class="swatch sw-arc"></span><span data-i="arc"></span></span></label>
+        <input type="number" id="arc" min="0" step="1000" data-ph="400000">
       </div>
     </div>
   </div>
 
-  <!-- STEP 4: RATIO + CAPACITY -->
-  <div class="panel" data-step="04">
-    <h2>Formation &amp; march size</h2>
-
+  <!-- 02 RALLY + MARCHES -->
+  <div class="panel" data-step="02">
+    <h2 data-i="s2"></h2>
     <div class="field">
-      <label>Generation preset</label>
-      <div class="presets">
-        <div class="preset-btn" onclick="applyPreset(50,20,30)">Early game — 5/2/3</div>
-        <div class="preset-btn" onclick="applyPreset(10,30,60)">Gen 1 — 10/30/60</div>
-        <div class="preset-btn" onclick="applyPreset(10,20,70)">Gen 2 — 10/20/70</div>
-        <div class="preset-btn active" id="presetGen3" onclick="applyPreset(10,10,80)">Gen 3 — 10/10/80</div>
-        <div class="preset-btn" onclick="applyPreset(1,10,89)">Gen 4+ — 1/10/89</div>
+      <label data-i="leadQ"></label>
+      <div class="row">
+        <button class="pill active" data-rally="no"><span data-i="no"></span><small data-i="noSub"></small></button>
+        <button class="pill" data-rally="yes"><span data-i="yes"></span><small data-i="yesSub"></small></button>
       </div>
     </div>
-
-    <div class="slider-row">
-      <div class="top"><span class="troop-label"><span class="swatch sw-inf"></span>Infantry</span><span class="val" id="lblInf">10%</span></div>
-      <input type="range" id="rangeInf" min="0" max="100" value="10" oninput="onSlide('inf')">
+    <div class="field">
+      <label data-i="marchQ"></label>
+      <div class="row">
+        <button class="pill" data-marches="4">4</button>
+        <button class="pill active" data-marches="5">5</button>
+        <button class="pill" data-marches="6">6</button>
+      </div>
+      <div class="note" id="marchNote"></div>
     </div>
-    <div class="slider-row">
-      <div class="top"><span class="troop-label"><span class="swatch sw-cav"></span>Cavalry</span><span class="val" id="lblCav">10%</span></div>
-      <input type="range" id="rangeCav" min="0" max="100" value="10" oninput="onSlide('cav')">
-    </div>
-    <div class="slider-row">
-      <div class="top"><span class="troop-label"><span class="swatch sw-arc"></span>Archers</span><span class="val" id="lblArc">80%</span></div>
-      <input type="range" id="rangeArc" min="0" max="100" value="80" oninput="onSlide('arc')">
-    </div>
-    <div class="ratio-total" id="ratioTotal">Total: 100%</div>
-
-    <div class="field" style="margin-top:18px;">
-      <label for="capacity">Troops per march (your march capacity)</label>
-      <input type="number" id="capacity" min="0" max="90000" step="1000" value="90000" onchange="clampCapacity()">
-      <div class="capacity-note">Hard-capped at 90,000 troops per march.</div>
+    <div class="field">
+      <label data-i="capL"></label>
+      <div class="fixed" id="capVal">90,000</div>
+      <div class="note" data-i="capNote"></div>
     </div>
   </div>
 
-  <button class="cta" onclick="calculate()">Build my manifest</button>
-
-  <!-- RESULTS -->
-  <div id="results">
-
-    <div class="banner" style="margin: 40px 0 20px;">
-      <div class="eyebrow">Rally Manifest</div>
-      <h1 style="font-size:28px;">Your <span>Marches</span></h1>
+  <!-- 03 RATIO -->
+  <div class="panel" data-step="03">
+    <h2 data-i="s3"></h2>
+    <p class="hint" data-i="hint"></p>
+    <div class="field">
+      <label data-i="targetL"></label>
+      <div class="row gens">
+        <button class="pill" data-gen="r60">10 / 30 / 60</button>
+        <button class="pill" data-gen="r70">10 / 20 / 70</button>
+        <button class="pill active" data-gen="r80">10 / 10 / 80</button>
+        <button class="pill" data-gen="r89">1 / 10 / 89</button>
+      </div>
     </div>
+    <div id="ratioBox"></div>
+  </div>
 
-    <div id="statusBanner"></div>
-
-    <div class="summary-grid">
-      <div class="stat"><div class="n" id="statMarches">0</div><div class="l">Total marches</div></div>
-      <div class="stat"><div class="n" id="statFillable">0</div><div class="l">Fully fillable</div></div>
-      <div class="stat"><div class="n" id="statTroops">0</div><div class="l">Troops committed</div></div>
+  <!-- 04 MANIFEST -->
+  <div class="panel" data-step="04" id="results" style="display:none;">
+    <h2 data-i="s4"></h2>
+    <div id="status"></div>
+    <div class="summary">
+      <div class="stat"><div class="n" id="sRatio">–</div><div class="l" id="statRatio"></div></div>
+      <div class="stat"><div class="n" id="sMarch">–</div><div class="l" data-i="statPer"></div></div>
+      <div class="stat"><div class="n" id="sTotal">–</div><div class="l" data-i="statTotal"></div></div>
     </div>
-
-    <div class="legend">
-      <div class="item"><span class="swatch sw-inf"></span>Infantry</div>
-      <div class="item"><span class="swatch sw-cav"></span>Cavalry</div>
-      <div class="item"><span class="swatch sw-arc"></span>Archers</div>
-    </div>
-
     <div id="marchList"></div>
-
+    <button class="copy" id="copyBtn" data-i="copy"></button>
   </div>
 
-  <p class="footnote">Formation impact varies with hero gear, lethality and research — treat this as your starting split, then fine-tune in the in-game march preview.</p>
-
+  <p class="footnote" data-i="footnote"></p>
 </div>
 
 <script>
-  let role = 'join';
-  let joinMarches = 5;
-  let leadExtra = true; // true = lead rally adds +1 march, false = lead uses one of the marches above
-  let ratio = { inf: 10, cav: 10, arc: 80 };
+  const I18N = {
+    en: {
+      locale:'en-US', html:'en', docTitle:'Bear Trap Planner',
+      eyebrow:'Kingshot · Bear Hunt', title:'Bear Trap <span>Planner</span>',
+      sub:'Enter your troops, pick your marches, and get the best ratio you can actually fill — plus what it takes to push archers higher.',
+      s1:'Troops available', inf:'Infantry', cav:'Cavalry', arc:'Archers', infL:'infantry', cavL:'cavalry', arcL:'archers', eg:'e.g.',
+      s2:'Rally & marches', leadQ:'Will you also lead a rally?',
+      no:'No', noSub:"Joining others' rallies only", yes:'Yes', yesSub:'One march leads your own rally',
+      marchQ:'How many marches can you send?', capL:'Join march capacity', capNote:'Max per join march — fixed.',
+      s3:'Formation ratio', hint:"Pick the ratio you want to run (Infantry / Cavalry / Archers). The others stay listed, with how many troops you'd need for each.",
+      targetL:'Target ratio · Inf / Cav / Arc', empty:'Enter your troop counts above to see ratios.',
+      s4:'Your manifest', statPer:'Per join march', statTotal:'Troops committed',
+      copy:'Copy manifest for alliance chat', copied:'Copied ✓',
+      footnote:'Every march uses the same ratio so each one hits the bear at full strength. Hero gear, lethality and research still matter — use this as your split, then fine-tune in the march preview.',
+      infS:'Inf', cavS:'Cav', arcS:'Arc',
+      marchNoteRally:'{j} join marches + 1 lead rally', marchNoteJoin:'{n} join marches',
+      legend:'Infantry / Cavalry / Archers · checked against your join marches', tagFit:'Fits your troops', tagTarget:'Target',
+      fitUnder:'Closest to your target ratio you can send{after}, at {size} per join march.',
+      fitFull:'Closest to your target ratio that fills all {j} join marches to {cap}{after}.',
+      needDesc:'Joins need {arc} archers, {cav} cavalry, {inf} infantry for {j} join marches of {cap}{after}.',
+      canFill:'✓ you can fill this', need:'need {list}',
+      plusArc:'+{n} archers', plusCav:'+{n} cavalry', plusInf:'+{n} infantry',
+      preview:'Target preview — you need <b>{list}</b> to fill {j} join marches at {r}{after2}{extra}.',
+      under:' Join marches are {per} instead of {cap} — you need <b>{more}</b> more troops to fill them.',
+      off:' This is as close to your target ratio as your troops allow.',
+      joinsMsg:'Join marches {how}, all at the same ratio.{off}{under}', joinsFirst:'filled first',
+      reserve:'Left in reserve: {inf} infantry, {cav} cavalry, {arc} archers.',
+      leadName:'Lead rally ★', joinName:'Join march {i}',
+      copyHead:'Bear Trap — {j} join marches{plus}', copyPlus:' + 1 lead rally', copyLead:'Lead rally (remaining): ', copyEach:'Each join ({r}): ',
+      t10:'Use <b>T10 troops only</b> — enter your T10 count for each type.',
+      leadRemain:'Everything left after the joins goes to your rally. The best split depends on your personal stats.',
+      leadEmpty:'Nothing left for your rally — the join marches need everything above.',
+      calcLink:'Find your best rally ratio (Frakinator) ↗',
+      copyCalc:'Rally ratio calculator: ',
+    },
+    fr: {
+      locale:'fr-FR', html:'fr', docTitle:'Planificateur Piège à ours',
+      eyebrow:"Kingshot · Chasse à l'ours", title:'Planificateur <span>Piège à ours</span>',
+      sub:"Saisissez vos troupes, choisissez vos marches et obtenez le meilleur ratio que vous pouvez réellement remplir — et ce qu'il faut pour ajouter plus d'archers.",
+      s1:'Troupes disponibles', inf:'Infanterie', cav:'Cavalerie', arc:'Archers', infL:'infanterie', cavL:'cavalerie', arcL:'archers', eg:'ex.',
+      s2:'Rassemblement et marches', leadQ:'Allez-vous aussi lancer un rassemblement ?',
+      no:'Non', noSub:'Rejoindre uniquement les rassemblements des autres', yes:'Oui', yesSub:'Une marche mène votre propre rassemblement',
+      marchQ:'Combien de marches pouvez-vous envoyer ?', capL:"Capacité d'une marche de renfort", capNote:'Maximum par marche de renfort — fixe.',
+      s3:'Ratio de formation', hint:'Choisissez le ratio à utiliser (Infanterie / Cavalerie / Archers). Les autres restent affichés, avec les troupes nécessaires pour chacun.',
+      targetL:'Ratio cible · Inf / Cav / Arc', empty:'Saisissez vos troupes ci-dessus pour voir les ratios.',
+      s4:'Votre composition', statPer:'Par marche de renfort', statTotal:'Troupes engagées',
+      copy:"Copier pour le chat d'alliance", copied:'Copié ✓',
+      footnote:"Chaque marche utilise le même ratio pour frapper l'ours à pleine puissance. L'équipement des héros, la létalité et la recherche comptent toujours — partez de cette répartition, puis ajustez dans l'aperçu de marche.",
+      infS:'Inf', cavS:'Cav', arcS:'Arc',
+      marchNoteRally:'{j} marches de renfort + 1 rassemblement', marchNoteJoin:'{n} marches de renfort',
+      legend:'Infanterie / Cavalerie / Archers · vérifié sur vos marches de renfort', tagFit:'Adapté à vos troupes', tagTarget:'Cible',
+      fitUnder:'Le plus proche de votre ratio cible que vous pouvez envoyer{after}, à {size} par marche de renfort.',
+      fitFull:'Le plus proche de votre ratio cible qui remplit les {j} marches de renfort à {cap}{after}.',
+      needDesc:'Les renforts nécessitent {arc} archers, {cav} cavalerie et {inf} infanterie pour {j} marches de {cap}{after}.',
+      canFill:'✓ réalisable', need:'manque {list}',
+      plusArc:'+{n} archers', plusCav:'+{n} cavalerie', plusInf:'+{n} infanterie',
+      preview:'Aperçu de la cible — il vous faut <b>{list}</b> pour remplir {j} marches de renfort en {r}{after2}{extra}.',
+      under:' Les marches de renfort font {per} au lieu de {cap} — il vous faut <b>{more}</b> troupes de plus pour les remplir.',
+      off:" C'est le plus proche de votre ratio cible que vos troupes permettent.",
+      joinsMsg:'Marches de renfort {how}, toutes au même ratio.{off}{under}', joinsFirst:'remplies en premier',
+      reserve:'En réserve : {inf} infanterie, {cav} cavalerie, {arc} archers.',
+      leadName:'Rassemblement ★', joinName:'Renfort {i}',
+      copyHead:'Piège à ours — {j} renforts{plus}', copyPlus:' + 1 rassemblement', copyLead:'Rassemblement (reste) : ', copyEach:'Chaque renfort ({r}) : ',
+      t10:'Utilisez <b>uniquement des troupes T10</b> — saisissez vos effectifs T10 pour chaque type.',
+      leadRemain:'Tout ce qui reste après les renforts va à votre rassemblement. La meilleure répartition dépend de vos stats personnelles.',
+      leadEmpty:'Rien ne reste pour votre rassemblement — les renforts ci-dessus utilisent tout.',
+      calcLink:'Trouver votre meilleur ratio de rassemblement (Frakinator) ↗',
+      copyCalc:'Calculateur de ratio : ',
+    },
+    es: {
+      locale:'es-ES', html:'es', docTitle:'Planificador Trampa para osos',
+      eyebrow:'Kingshot · Caza del oso', title:'Planificador <span>Trampa para osos</span>',
+      sub:'Introduce tus tropas, elige tus marchas y obtén el mejor ratio que realmente puedes llenar — y lo que necesitas para subir los arqueros.',
+      s1:'Tropas disponibles', inf:'Infantería', cav:'Caballería', arc:'Arqueros', infL:'infantería', cavL:'caballería', arcL:'arqueros', eg:'ej.',
+      s2:'Rally y marchas', leadQ:'¿También vas a liderar un rally?',
+      no:'No', noSub:'Solo unirme a rallies de otros', yes:'Sí', yesSub:'Una marcha lidera tu propio rally',
+      marchQ:'¿Cuántas marchas puedes enviar?', capL:'Capacidad de marcha de unión', capNote:'Máximo por marcha de unión — fijo.',
+      s3:'Ratio de formación', hint:'Elige el ratio que quieres usar (Infantería / Caballería / Arqueros). Los demás siguen visibles, con las tropas que necesitarías para cada uno.',
+      targetL:'Ratio objetivo · Inf / Cab / Arq', empty:'Introduce tus tropas arriba para ver los ratios.',
+      s4:'Tu formación', statPer:'Por marcha de unión', statTotal:'Tropas enviadas',
+      copy:'Copiar para el chat de alianza', copied:'Copiado ✓',
+      footnote:'Cada marcha usa el mismo ratio para golpear al oso con toda su fuerza. El equipo de héroes, la letalidad y la investigación siguen importando — úsalo como base y ajusta en la vista previa de la marcha.',
+      infS:'Inf', cavS:'Cab', arcS:'Arq',
+      marchNoteRally:'{j} marchas de unión + 1 rally propio', marchNoteJoin:'{n} marchas de unión',
+      legend:'Infantería / Caballería / Arqueros · comprobado con tus marchas de unión', tagFit:'Se ajusta a tus tropas', tagTarget:'Objetivo',
+      fitUnder:'Lo más cercano a tu ratio objetivo que puedes enviar{after}, con {size} por marcha de unión.',
+      fitFull:'Lo más cercano a tu ratio objetivo que llena las {j} marchas de unión a {cap}{after}.',
+      needDesc:'Las uniones necesitan {arc} arqueros, {cav} de caballería y {inf} de infantería para {j} marchas de {cap}{after}.',
+      canFill:'✓ puedes llenarlo', need:'faltan {list}',
+      plusArc:'+{n} arqueros', plusCav:'+{n} caballería', plusInf:'+{n} infantería',
+      preview:'Vista previa — necesitas <b>{list}</b> para llenar {j} marchas de unión en {r}{after2}{extra}.',
+      under:' Las marchas de unión son de {per} en vez de {cap} — necesitas <b>{more}</b> tropas más para llenarlas.',
+      off:' Es lo más cercano a tu ratio objetivo que permiten tus tropas.',
+      joinsMsg:'Marchas de unión {how}, todas con el mismo ratio.{off}{under}', joinsFirst:'llenadas primero',
+      reserve:'En reserva: {inf} infantería, {cav} caballería, {arc} arqueros.',
+      leadName:'Rally propio ★', joinName:'Unión {i}',
+      copyHead:'Trampa para osos — {j} uniones{plus}', copyPlus:' + 1 rally propio', copyLead:'Rally propio (resto): ', copyEach:'Cada unión ({r}): ',
+      t10:'Usa <b>solo tropas T10</b> — introduce tus tropas T10 de cada tipo.',
+      leadRemain:'Todo lo que sobra tras las uniones va a tu rally. El mejor reparto depende de tus estadísticas personales.',
+      leadEmpty:'No queda nada para tu rally — las uniones de arriba lo necesitan todo.',
+      calcLink:'Calcula tu mejor ratio de rally (Frakinator) ↗',
+      copyCalc:'Calculadora de ratio: ',
+    },
+    pt: {
+      locale:'pt-BR', html:'pt', docTitle:'Planejador Armadilha do Urso',
+      eyebrow:'Kingshot · Caça ao Urso', title:'Planejador <span>Armadilha do Urso</span>',
+      sub:'Informe suas tropas, escolha suas marchas e veja a melhor proporção que você realmente consegue preencher — e o que falta para colocar mais arqueiros.',
+      s1:'Tropas disponíveis', inf:'Infantaria', cav:'Cavalaria', arc:'Arqueiros', infL:'infantaria', cavL:'cavalaria', arcL:'arqueiros', eg:'ex.',
+      s2:'Rally e marchas', leadQ:'Você também vai liderar um rally?',
+      no:'Não', noSub:'Só entrar nos rallies dos outros', yes:'Sim', yesSub:'Uma marcha lidera seu próprio rally',
+      marchQ:'Quantas marchas você pode enviar?', capL:'Capacidade da marcha de apoio', capNote:'Máximo por marcha de apoio — fixo.',
+      s3:'Proporção da formação', hint:'Escolha a proporção que quer usar (Infantaria / Cavalaria / Arqueiros). As outras continuam listadas, com quantas tropas você precisaria para cada uma.',
+      targetL:'Proporção alvo · Inf / Cav / Arq', empty:'Informe suas tropas acima para ver as proporções.',
+      s4:'Sua formação', statPer:'Por marcha de apoio', statTotal:'Tropas enviadas',
+      copy:'Copiar para o chat da aliança', copied:'Copiado ✓',
+      footnote:'Toda marcha usa a mesma proporção para atingir o urso com força total. Equipamento de heróis, letalidade e pesquisa ainda importam — use isto como base e ajuste na prévia da marcha.',
+      infS:'Inf', cavS:'Cav', arcS:'Arq',
+      marchNoteRally:'{j} marchas de apoio + 1 rally próprio', marchNoteJoin:'{n} marchas de apoio',
+      legend:'Infantaria / Cavalaria / Arqueiros · verificado nas suas marchas de apoio', tagFit:'Cabe nas suas tropas', tagTarget:'Alvo',
+      fitUnder:'O mais próximo da sua proporção alvo que você consegue enviar{after}, com {size} por marcha de apoio.',
+      fitFull:'O mais próximo da sua proporção alvo que preenche as {j} marchas de apoio com {cap}{after}.',
+      needDesc:'Os apoios precisam de {arc} arqueiros, {cav} de cavalaria e {inf} de infantaria para {j} marchas de {cap}{after}.',
+      canFill:'✓ você consegue preencher', need:'faltam {list}',
+      plusArc:'+{n} arqueiros', plusCav:'+{n} cavalaria', plusInf:'+{n} infantaria',
+      preview:'Prévia do alvo — você precisa de <b>{list}</b> para preencher {j} marchas de apoio em {r}{after2}{extra}.',
+      under:' As marchas de apoio têm {per} em vez de {cap} — você precisa de <b>{more}</b> tropas a mais para preenchê-las.',
+      off:' É o mais próximo da sua proporção alvo que suas tropas permitem.',
+      joinsMsg:'Marchas de apoio {how}, todas com a mesma proporção.{off}{under}', joinsFirst:'preenchidas primeiro',
+      reserve:'Na reserva: {inf} infantaria, {cav} cavalaria, {arc} arqueiros.',
+      leadName:'Rally próprio ★', joinName:'Apoio {i}',
+      copyHead:'Armadilha do Urso — {j} apoios{plus}', copyPlus:' + 1 rally próprio', copyLead:'Rally próprio (restante): ', copyEach:'Cada apoio ({r}): ',
+      t10:'Use <b>somente tropas T10</b> — informe suas tropas T10 de cada tipo.',
+      leadRemain:'Tudo o que sobra depois dos apoios vai para o seu rally. A melhor divisão depende dos seus atributos pessoais.',
+      leadEmpty:'Não sobra nada para o seu rally — os apoios acima precisam de tudo.',
+      calcLink:'Calcule sua melhor proporção de rally (Frakinator) ↗',
+      copyCalc:'Calculadora de proporção: ',
+    },
+  };
 
-  function setRole(r){
-    role = r;
-    document.querySelectorAll('[data-role]').forEach(el=>{
-      el.classList.toggle('active', el.dataset.role === r);
+  let lang = (() => {
+    try { const s = localStorage.getItem('btp-lang'); if (I18N[s]) return s; } catch (e) {}
+    const n = (navigator.language || 'en').slice(0, 2).toLowerCase();
+    return I18N[n] ? n : 'en';
+  })();
+  const L = () => I18N[lang];
+  const T = (k, v = {}) => (L()[k] ?? I18N.en[k]).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
+
+  const $ = id => document.getElementById(id);
+  const fmt = n => Math.round(n).toLocaleString(L().locale);
+  const num = id => Math.max(0, Math.floor(parseFloat($(id).value) || 0));
+
+  function applyLang(){
+    document.documentElement.lang = L().html;
+    document.title = L().docTitle;
+    document.querySelectorAll('[data-i]').forEach(el => el.innerHTML = T(el.dataset.i));
+    document.querySelectorAll('[data-ph]').forEach(el => el.placeholder = `${T('eg')} ${Number(el.dataset.ph).toLocaleString(L().locale)}`);
+    document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+    $('statRatio').textContent = `${T('infS')} / ${T('cavS')} / ${T('arcS')}`;
+  }
+  document.querySelectorAll('[data-lang]').forEach(b => b.onclick = () => {
+    lang = b.dataset.lang;
+    try { localStorage.setItem('btp-lang', lang); } catch (e) {}
+    applyLang(); update();
+  });
+
+  const RATIOS = {
+    r60:{ inf:10, cav:30, arc:60 },
+    r70:{ inf:10, cav:20, arc:70 },
+    r80:{ inf:10, cav:10, arc:80 },
+    r89:{ inf:1,  cav:10, arc:89 },
+  };
+  const ORDER = ['r60','r70','r80','r89'];
+
+  const CAP = 90000; // max join march size — fixed
+  const CALC_URL = 'https://frakinator.streamlit.app/';
+  const state = { rally:false, marches:5, gen:'r80', pick:null };
+
+  // ---------- controls ----------
+  function group(attr, fn){
+    document.querySelectorAll(`[data-${attr}]`).forEach(el => el.onclick = () => {
+      document.querySelectorAll(`[data-${attr}]`).forEach(p => p.classList.toggle('active', p === el));
+      fn(el.dataset[attr]); update();
     });
-    document.getElementById('leadNote').style.display = (r === 'lead') ? 'block' : 'none';
+  }
+  group('rally', v => state.rally = v === 'yes');
+  group('marches', v => state.marches = +v);
+  group('gen', v => { state.gen = v; state.pick = null; });
+  ['inf','cav','arc'].forEach(id => $(id).addEventListener('input', () => { state.pick = null; update(); }));
+
+  // ---------- core math ----------
+  function atRatio(size, r){
+    const arc = Math.floor(size * r.arc / 100);
+    const cav = Math.floor(size * r.cav / 100);
+    return { inf: size - arc - cav, cav, arc };
   }
 
-  function toggleLeadExtra(){
-    leadExtra = !leadExtra;
-    const toggle = document.getElementById('leadExtraToggle');
-    const sub = document.getElementById('leadExtraSub');
-    toggle.classList.toggle('active', leadExtra);
-    sub.textContent = leadExtra
-      ? 'On — your lead rally adds a march on top of the count above'
-      : 'Off — your lead rally uses one of the marches counted above';
+  // Closest thing to ratio r that your stock can fill in n marches of up to `cap`.
+  function bestFit(cap, r, t, n){
+    const total = t.inf + t.cav + t.arc;
+    const size = Math.min(cap, Math.floor(total / n));
+    const tgt = atRatio(size, r);
+    const per = { inf:Math.floor(t.inf / n), cav:Math.floor(t.cav / n), arc:Math.floor(t.arc / n) };
+    const m = { inf:Math.min(tgt.inf, per.inf), cav:Math.min(tgt.cav, per.cav), arc:Math.min(tgt.arc, per.arc) };
+    let gap = size - m.inf - m.cav - m.arc;
+    for (const k of ['arc','cav','inf']){
+      const add = Math.min(gap, per[k] - m[k]); m[k] += add; gap -= add;
+    }
+    return m;
   }
 
-  function setMarches(n){
-    joinMarches = n;
-    document.querySelectorAll('[data-marches]').forEach(el=>{
-      el.classList.toggle('active', parseInt(el.dataset.marches) === n);
-    });
+  const sum = m => m.inf + m.cav + m.arc;
+  const pctStr = m => { const s = sum(m) || 1, f = x => (+(x / s * 100).toFixed(1)).toLocaleString(L().locale); return `${f(m.inf)} / ${f(m.cav)} / ${f(m.arc)}`; };
+  const shortOf = (m, t, n) => ({ inf:Math.max(0, m.inf*n - t.inf), cav:Math.max(0, m.cav*n - t.cav), arc:Math.max(0, m.arc*n - t.arc) });
+  const shortTxt = s => [s.arc && T('plusArc', {n:fmt(s.arc)}), s.cav && T('plusCav', {n:fmt(s.cav)}), s.inf && T('plusInf', {n:fmt(s.inf)})].filter(Boolean);
+  const minus = (a, b, n = 1) => ({ inf:Math.max(0, a.inf - b.inf*n), cav:Math.max(0, a.cav - b.cav*n), arc:Math.max(0, a.arc - b.arc*n) });
+
+  // Join marches are always filled first; whatever is left goes to your own rally.
+  function plan(r, t, joins, fitJoins){
+    const m = fitJoins ? bestFit(CAP, r, t, joins) : atRatio(CAP, r);
+    const short = shortOf(m, t, joins);
+    const ok = !shortTxt(short).length;
+    const left = minus(t, m, joins);
+    return { m, short, ok, left, t };
   }
 
-  function applyPreset(inf, cav, arc){
-    ratio = { inf, cav, arc };
-    document.getElementById('rangeInf').value = inf;
-    document.getElementById('rangeCav').value = cav;
-    document.getElementById('rangeArc').value = arc;
-    updateRatioLabels();
-    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-  }
+  function update(){
+    const t = { inf:num('inf'), cav:num('cav'), arc:num('arc') };
+    const n = state.marches;
+    const joins = state.rally ? n - 1 : n;
+    const genKey = state.gen;
 
-  function onSlide(which){
-    ratio.inf = parseInt(document.getElementById('rangeInf').value);
-    ratio.cav = parseInt(document.getElementById('rangeCav').value);
-    ratio.arc = parseInt(document.getElementById('rangeArc').value);
-    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
-    updateRatioLabels();
-  }
+    $('capVal').textContent = fmt(CAP);
+    $('marchNote').textContent = state.rally ? T('marchNoteRally', {j:joins}) : T('marchNoteJoin', {n});
 
-  function updateRatioLabels(){
-    document.getElementById('lblInf').textContent = ratio.inf + '%';
-    document.getElementById('lblCav').textContent = ratio.cav + '%';
-    document.getElementById('lblArc').textContent = ratio.arc + '%';
-    const total = ratio.inf + ratio.cav + ratio.arc;
-    const totalEl = document.getElementById('ratioTotal');
-    totalEl.textContent = 'Total: ' + total + '%';
-    totalEl.classList.toggle('bad', total !== 100);
-  }
-
-  function clampCapacity(){
-    const el = document.getElementById('capacity');
-    if (parseFloat(el.value) > 90000) el.value = 90000;
-  }
-
-  function fmt(n){
-    return Math.round(n).toLocaleString('en-US');
-  }
-
-  function calculate(){
-    const total = ratio.inf + ratio.cav + ratio.arc;
-    if (total === 0) { alert('Set a troop formation first — all sliders are at 0%.'); return; }
-
-    // normalize ratio in case it doesn't sum to exactly 100
-    const nInf = ratio.inf / total;
-    const nCav = ratio.cav / total;
-    const nArc = ratio.arc / total;
-
-    const capacity = Math.min(parseFloat(document.getElementById('capacity').value) || 0, 90000);
-    const availInf = parseFloat(document.getElementById('availInf').value) || 0;
-    const availCav = parseFloat(document.getElementById('availCav').value) || 0;
-    const availArc = parseFloat(document.getElementById('availArc').value) || 0;
-
-    const hasLead = (role === 'lead');
-    const leadIsExtra = hasLead && leadExtra;
-    const totalMarches = joinMarches + (leadIsExtra ? 1 : 0);
-
-    const perMarch = {
-      inf: capacity * nInf,
-      cav: capacity * nCav,
-      arc: capacity * nArc
-    };
-
-    // how many marches can be FULLY filled given available troops
-    let fillable = totalMarches;
-    if (perMarch.inf > 0) fillable = Math.min(fillable, Math.floor(availInf / perMarch.inf));
-    if (perMarch.cav > 0) fillable = Math.min(fillable, Math.floor(availCav / perMarch.cav));
-    if (perMarch.arc > 0) fillable = Math.min(fillable, Math.floor(availArc / perMarch.arc));
-    fillable = Math.max(0, Math.min(fillable, totalMarches));
-
-    const marchList = document.getElementById('marchList');
-    marchList.innerHTML = '';
-
-    let committedTroops = 0;
-    let remaining = { inf: availInf, cav: availCav, arc: availArc };
-
-    for (let i = 0; i < totalMarches; i++){
-      const isLead = (hasLead && i === totalMarches - 1);
-      const name = isLead ? 'Lead rally' : `Join march ${i + 1}`;
-
-      // allocate this march up to perMarch, capped by what's left
-      const inf = Math.min(perMarch.inf, remaining.inf);
-      const cav = Math.min(perMarch.cav, remaining.cav);
-      const arc = Math.min(perMarch.arc, remaining.arc);
-      remaining.inf -= inf; remaining.cav -= cav; remaining.arc -= arc;
-
-      const marchTotal = inf + cav + arc;
-      committedTroops += marchTotal;
-
-      const pInf = marchTotal ? (inf / marchTotal * 100) : 0;
-      const pCav = marchTotal ? (cav / marchTotal * 100) : 0;
-      const pArc = marchTotal ? (arc / marchTotal * 100) : 0;
-
-      const short = marchTotal < capacity - 0.5;
-
-      const card = document.createElement('div');
-      card.className = 'march-card';
-      card.innerHTML = `
-        <div class="head">
-          <span class="name ${isLead ? 'lead' : ''}">${name}${isLead ? ' ★' : ''}</span>
-          <span class="cap">${fmt(marchTotal)} / ${fmt(capacity)}${short ? ' ⚠ short' : ''}</span>
-        </div>
-        <div class="bar">
-          <div class="b-inf" style="width:${pInf}%"></div>
-          <div class="b-cav" style="width:${pCav}%"></div>
-          <div class="b-arc" style="width:${pArc}%"></div>
-        </div>
-        <div class="breakdown">
-          <span>Infantry <b>${fmt(inf)}</b></span>
-          <span>Cavalry <b>${fmt(cav)}</b></span>
-          <span>Archers <b>${fmt(arc)}</b></span>
-        </div>
-      `;
-      marchList.appendChild(card);
+    if (!sum(t)){
+      $('ratioBox').innerHTML = `<div class="empty">${T('empty')}</div>`;
+      $('results').style.display = 'none';
+      return;
     }
 
-    document.getElementById('statMarches').textContent = totalMarches + (hasLead && !leadExtra ? ' (1 leading)' : '');
-    document.getElementById('statFillable').textContent = fillable + ' / ' + totalMarches;
-    document.getElementById('statTroops').textContent = fmt(committedTroops);
+    const options = ORDER.map(k => {
+      const r = RATIOS[k];
+      return { key:k, r, p:plan(r, t, joins, false), isGen:k === genKey, label:`${r.inf} / ${r.cav} / ${r.arc}` };
+    });
+    const genOpt = options.find(o => o.isGen);
 
-    const neededInf = perMarch.inf * totalMarches;
-    const neededCav = perMarch.cav * totalMarches;
-    const neededArc = perMarch.arc * totalMarches;
-    const shortInf = Math.max(0, neededInf - availInf);
-    const shortCav = Math.max(0, neededCav - availCav);
-    const shortArc = Math.max(0, neededArc - availArc);
+    let fit = null;
+    if (!genOpt.p.ok){
+      const p = plan(genOpt.r, t, joins, true);
+      fit = { key:'fit', r:genOpt.r, p, label:pctStr(p.m), fit:true };
+    }
+    const all = fit ? [fit, ...options] : options;
+    if (!all.some(o => o.key === state.pick)) state.pick = fit ? 'fit' : genKey;
 
-    const statusEl = document.getElementById('statusBanner');
-    if (fillable >= totalMarches){
-      statusEl.innerHTML = `<div class="banner-msg ok">Your barracks cover every march at full capacity, with ${fmt(availInf - neededInf)} infantry, ${fmt(availCav - neededCav)} cavalry and ${fmt(availArc - neededArc)} archers left in reserve.</div>`;
+    let html = `<div class="ratio-legend">${T('legend')}</div><div class="opts">`;
+    all.forEach(o => {
+      const m = o.p.m;
+      let tag = '', desc;
+      if (o.fit){
+        tag = `<span class="tag rec">${T('tagFit')}</span>`;
+        desc = sum(m) < CAP
+          ? T('fitUnder', {size:fmt(sum(m))})
+          : T('fitFull', {j:joins, cap:fmt(CAP)});
+      } else {
+        if (o.isGen) tag = `<span class="tag ${o.p.ok ? 'rec' : 'alt'}">${T('tagTarget')}</span>`;
+        desc = T('needDesc', {arc:fmt(m.arc*joins), cav:fmt(m.cav*joins), inf:fmt(m.inf*joins), j:joins, cap:fmt(CAP)});
+      }
+      const status = o.p.ok ? `<span class="status ok">${T('canFill')}</span>`
+                            : `<span class="status need">${T('need', {list:shortTxt(o.p.short).join(', ')})}</span>`;
+      html += `<button class="opt ${state.pick === o.key ? 'active' : ''}" data-k="${o.key}">
+        <span class="ratio">${o.label}${tag}</span>${status}<span class="desc">${desc}</span></button>`;
+    });
+    html += '</div>';
+    $('ratioBox').innerHTML = html;
+    document.querySelectorAll('.opt').forEach(el => el.onclick = () => { state.pick = el.dataset.k; update(); });
+
+    renderManifest(all.find(o => o.key === state.pick), joins);
+  }
+
+  function renderManifest(o, joins){
+    const p = o.p, m = p.m, per = sum(m);
+    const lead = state.rally && p.ok ? p.left : null; // remaining troops for your own rally
+
+    const msgs = [];
+    if (!p.ok){
+      msgs.push(`<div class="msg warn">${T('preview', {list:shortTxt(p.short).join(', '), j:joins, r:o.label})}</div>`);
     } else {
-      let parts = [];
-      if (shortArc > 0) parts.push(`${fmt(shortArc)} more archers`);
-      if (shortInf > 0) parts.push(`${fmt(shortInf)} more infantry`);
-      if (shortCav > 0) parts.push(`${fmt(shortCav)} more cavalry`);
-      statusEl.innerHTML = `<div class="banner-msg warn">Only ${fillable} of ${totalMarches} marches can be filled at full capacity in this formation. You'd need ${parts.join(', ')} to fill them all — the marches below are topped up with what's left instead.</div>`;
+      const under = per < CAP ? T('under', {per:fmt(per), cap:fmt(CAP), more:fmt(CAP*joins - sum(p.t))}) : '';
+      const off = o.fit ? T('off') : '';
+      msgs.push(`<div class="msg ${per < CAP || o.fit ? 'warn' : 'ok'}">${T('joinsMsg', {how:T('joinsFirst'), off, under})}</div>`);
+      if (!state.rally) msgs.push(`<div class="msg ok" style="opacity:.85">${T('reserve', {inf:fmt(p.left.inf), cav:fmt(p.left.cav), arc:fmt(p.left.arc)})}</div>`);
     }
+    $('status').innerHTML = msgs.join('');
 
-    document.getElementById('results').style.display = 'block';
-    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const ratio = pctStr(m).replace(/ /g, '');
+    $('sRatio').textContent = ratio;
+    $('sMarch').textContent = fmt(per);
+    $('sTotal').textContent = fmt(per * joins + (lead ? sum(lead) : 0));
+
+    const bar = (x, c) => `<div class="bar">
+          <div class="b-inf" style="width:${c ? x.inf / c * 100 : 0}%"></div>
+          <div class="b-cav" style="width:${c ? x.cav / c * 100 : 0}%"></div>
+          <div class="b-arc" style="width:${c ? x.arc / c * 100 : 0}%"></div>
+        </div>`;
+    const breakdown = x => `<div class="breakdown">
+          <span>${T('inf')} <b>${fmt(x.inf)}</b></span><span>${T('cav')} <b>${fmt(x.cav)}</b></span><span>${T('arc')} <b>${fmt(x.arc)}</b></span>
+        </div>`;
+    const card = (name, x, c) => `<div class="march">
+        <div class="head"><span class="name">${name}</span><span class="cap">${fmt(sum(x))} / ${fmt(c)}</span></div>
+        ${bar(x, c)}${breakdown(x)}
+      </div>`;
+    let html = '';
+    for (let i = 0; i < joins; i++) html += card(T('joinName', {i:i + 1}), m, CAP);
+    if (state.rally){
+      const x = lead || { inf:0, cav:0, arc:0 };
+      html += `<div class="march lead">
+        <div class="head"><span class="name">${T('leadName')}</span><span class="cap">${fmt(sum(x))}</span></div>
+        <p class="lead-note">${T(lead ? 'leadRemain' : 'leadEmpty')}</p>
+        ${lead ? bar(x, sum(x)) + breakdown(x) : ''}
+        <a class="calc" href="${CALC_URL}" target="_blank" rel="noopener noreferrer">${T('calcLink')}</a>
+      </div>`;
+    }
+    $('marchList').innerHTML = html;
+
+    const line = x => `${T('infS')} ${fmt(x.inf)} | ${T('cavS')} ${fmt(x.cav)} | ${T('arcS')} ${fmt(x.arc)} = ${fmt(sum(x))}`;
+    const text = [
+      T('copyHead', {j:joins, plus:state.rally ? T('copyPlus') : ''}),
+      T('copyEach', {r:ratio}) + line(m),
+      lead ? T('copyLead') + line(lead) : '',
+      state.rally ? T('copyCalc') + CALC_URL : '',
+    ].filter(Boolean).join('\n');
+    $('copyBtn').onclick = () => {
+      const done = () => { $('copyBtn').textContent = T('copied'); setTimeout(() => $('copyBtn').textContent = T('copy'), 1500); };
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done).catch(() => prompt('', text));
+      else prompt('', text);
+    };
+    $('results').style.display = 'block';
   }
 
-  updateRatioLabels();
+  applyLang();
+  update();
 </script>
-
 </body>
 </html>
