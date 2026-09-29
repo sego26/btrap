@@ -81,7 +81,7 @@
   .opt .tag{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1px; text-transform:uppercase; padding:2px 7px; border-radius:3px; margin-left:8px; vertical-align:2px; }
   .tag.rec{ background:var(--ember); color:#1a1310; }
   .opt .status{ font-size:12.5px; text-align:right; font-family:'JetBrains Mono',monospace; }
-  .status.ok{ color:#a9c894; } .status.need{ color:#e0968a; }
+  .status.ok{ color:#a9c894; } .status.low{ color:var(--gold-bright); } .status.need{ color:#e0968a; }
   .opt .desc{ grid-column:1 / -1; font-size:12px; color:var(--dim); }
   .ratio-legend{ font-size:11.5px; color:var(--dim); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
 
@@ -256,6 +256,8 @@
       leadEmpty:'Nothing left for your rally — the join marches need everything above.',
       calcLink:'Find your best rally ratio (Frakinator) ↗',
       copyCalc:'Rally ratio calculator: ',
+      arcWarn:'Not enough archers for your own rally: only <b>{have}</b> left, fewer than the <b>{join}</b> in each join march. You need <b>+{need}</b> archers to match a join march.',
+      canFillLow:'✓ fills joins · rally low on archers',
     },
     fr: {
       locale:'fr-FR', html:'fr', docTitle:'Planificateur Piège à ours',
@@ -290,6 +292,8 @@
       leadEmpty:'Rien ne reste pour votre rassemblement — les renforts ci-dessus utilisent tout.',
       calcLink:'Trouver votre meilleur ratio de rassemblement (Frakinator) ↗',
       copyCalc:'Calculateur de ratio : ',
+      arcWarn:'Pas assez d\'archers pour votre propre rassemblement : il n\'en reste que <b>{have}</b>, moins que les <b>{join}</b> de chaque marche de renfort. Il vous faut <b>+{need}</b> archers pour égaler une marche de renfort.',
+      canFillLow:'✓ renforts OK · rassemblement court en archers',
     },
     es: {
       locale:'es-ES', html:'es', docTitle:'Planificador Trampa para osos',
@@ -324,6 +328,8 @@
       leadEmpty:'No queda nada para tu rally — las uniones de arriba lo necesitan todo.',
       calcLink:'Calcula tu mejor ratio de rally (Frakinator) ↗',
       copyCalc:'Calculadora de ratio: ',
+      arcWarn:'No hay suficientes arqueros para tu propio rally: solo quedan <b>{have}</b>, menos que los <b>{join}</b> de cada marcha de unión. Necesitas <b>+{need}</b> arqueros para igualar una marcha de unión.',
+      canFillLow:'✓ uniones OK · rally corto de arqueros',
     },
     pt: {
       locale:'pt-BR', html:'pt', docTitle:'Planejador Armadilha do Urso',
@@ -358,6 +364,8 @@
       leadEmpty:'Não sobra nada para o seu rally — os apoios acima precisam de tudo.',
       calcLink:'Calcule sua melhor proporção de rally (Frakinator) ↗',
       copyCalc:'Calculadora de proporção: ',
+      arcWarn:'Arqueiros insuficientes para o seu próprio rally: restam só <b>{have}</b>, menos que os <b>{join}</b> de cada marcha de apoio. Você precisa de <b>+{need}</b> arqueiros para igualar uma marcha de apoio.',
+      canFillLow:'✓ apoios OK · rally com poucos arqueiros',
     },
   };
 
@@ -476,6 +484,7 @@
     const all = fit ? [fit, ...options] : options;
     if (!all.some(o => o.key === state.pick)) state.pick = fit ? 'fit' : genKey;
 
+    const keep = () => '';
     let html = `<div class="ratio-legend">${T('legend')}</div><div class="opts">`;
     all.forEach(o => {
       const m = o.p.m;
@@ -483,13 +492,15 @@
       if (o.fit){
         tag = `<span class="tag rec">${T('tagFit')}</span>`;
         desc = sum(m) < CAP
-          ? T('fitUnder', {size:fmt(sum(m))})
-          : T('fitFull', {j:joins, cap:fmt(CAP)});
+          ? T('fitUnder', {size:fmt(sum(m)), after:keep(m)})
+          : T('fitFull', {j:joins, cap:fmt(CAP), after:keep(m)});
       } else {
         if (o.isGen) tag = `<span class="tag ${o.p.ok ? 'rec' : 'alt'}">${T('tagTarget')}</span>`;
-        desc = T('needDesc', {arc:fmt(m.arc*joins), cav:fmt(m.cav*joins), inf:fmt(m.inf*joins), j:joins, cap:fmt(CAP)});
+        desc = T('needDesc', {arc:fmt(m.arc*joins), cav:fmt(m.cav*joins), inf:fmt(m.inf*joins), j:joins, cap:fmt(CAP), after:keep(m)});
       }
-      const status = o.p.ok ? `<span class="status ok">${T('canFill')}</span>`
+      const low = state.rally && o.p.ok && o.p.left.arc < m.arc;
+      const status = low ? `<span class="status low">${T('canFillLow')}</span>`
+                   : o.p.ok ? `<span class="status ok">${T('canFill')}</span>`
                             : `<span class="status need">${T('need', {list:shortTxt(o.p.short).join(', ')})}</span>`;
       html += `<button class="opt ${state.pick === o.key ? 'active' : ''}" data-k="${o.key}">
         <span class="ratio">${o.label}${tag}</span>${status}<span class="desc">${desc}</span></button>`;
@@ -504,6 +515,8 @@
   function renderManifest(o, joins){
     const p = o.p, m = p.m, per = sum(m);
     const lead = state.rally && p.ok ? p.left : null; // remaining troops for your own rally
+    const arcWarn = lead && lead.arc < m.arc
+      ? `<div class="msg warn">⚠ ${T('arcWarn', {have:fmt(lead.arc), join:fmt(m.arc), need:fmt(m.arc - lead.arc)})}</div>` : '';
 
     const msgs = [];
     if (!p.ok){
@@ -512,6 +525,7 @@
       const under = per < CAP ? T('under', {per:fmt(per), cap:fmt(CAP), more:fmt(CAP*joins - sum(p.t))}) : '';
       const off = o.fit ? T('off') : '';
       msgs.push(`<div class="msg ${per < CAP || o.fit ? 'warn' : 'ok'}">${T('joinsMsg', {how:T('joinsFirst'), off, under})}</div>`);
+      if (arcWarn) msgs.push(arcWarn);
       if (!state.rally) msgs.push(`<div class="msg ok" style="opacity:.85">${T('reserve', {inf:fmt(p.left.inf), cav:fmt(p.left.cav), arc:fmt(p.left.arc)})}</div>`);
     }
     $('status').innerHTML = msgs.join('');
@@ -541,6 +555,7 @@
         <div class="head"><span class="name">${T('leadName')}</span><span class="cap">${fmt(sum(x))}</span></div>
         <p class="lead-note">${T(lead ? 'leadRemain' : 'leadEmpty')}</p>
         ${lead ? bar(x, sum(x)) + breakdown(x) : ''}
+        ${arcWarn ? arcWarn.replace('msg warn', 'msg warn" style="margin:11px 0 0') : ''}
         <a class="calc" href="${CALC_URL}" target="_blank" rel="noopener noreferrer">${T('calcLink')}</a>
       </div>`;
     }
