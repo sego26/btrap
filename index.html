@@ -134,6 +134,9 @@
   html[dir=rtl] .opt{ text-align:right; } html[dir=rtl] .opt .status{ text-align:left; }
   .ratio, .gens .pill, #sRatio, .cap, .fixed, input[type=number], bdi{ direction:ltr; unicode-bidi:isolate; }
   html[dir=rtl] .fixed, html[dir=rtl] input[type=number]{ text-align:right; }
+  .frak.grid3{ grid-template-columns:repeat(3,1fr); gap:10px; }
+  label.mini{ font-size:11px; letter-spacing:.6px; }
+  .frak-err{ color:#e0968a; }
   .footnote{ text-align:center; font-size:12px; color:var(--dim); margin-top:28px; line-height:1.6; }
 </style>
 </head>
@@ -178,6 +181,23 @@
       <div class="row">
         <button class="pill active" data-rally="no"><span data-i="no"></span><small data-i="noSub"></small></button>
         <button class="pill" data-rally="yes"><span data-i="yes"></span><small data-i="yesSub"></small></button>
+      </div>
+    </div>
+    <div id="frakFields" style="display:none;">
+      <div class="field">
+        <label data-i="frakL"></label>
+        <div class="grid3 frak">
+          <div><label for="fInf" class="mini"><span class="troop-label"><span class="swatch sw-inf"></span><span data-i="inf"></span> %</span></label><input type="number" id="fInf" min="0" max="100" step="0.1" placeholder="%"></div>
+          <div><label for="fCav" class="mini"><span class="troop-label"><span class="swatch sw-cav"></span><span data-i="cav"></span> %</span></label><input type="number" id="fCav" min="0" max="100" step="0.1" placeholder="%"></div>
+          <div><label for="fArc" class="mini"><span class="troop-label"><span class="swatch sw-arc"></span><span data-i="arc"></span> %</span></label><input type="number" id="fArc" min="0" max="100" step="0.1" placeholder="%"></div>
+        </div>
+        <div class="note" data-i="frakNote"></div>
+        <div class="note frak-err" id="frakErr"></div>
+      </div>
+      <div class="field">
+        <label for="rallySize" data-i="rallySizeL"></label>
+        <input type="number" id="rallySize" min="0" step="1000">
+        <div class="note" data-i="rallySizeNote"></div>
       </div>
     </div>
     <div class="field">
@@ -265,6 +285,11 @@
       copyCalc:'Rally ratio calculator: ',
       arcWarn:'Not enough archers for your own rally: only <b>{have}</b> left, fewer than the <b>{join}</b> in each join march. You need <b>+{need}</b> archers to match a join march.',
       canFillLow:'✓ fills joins · rally low on archers',
+      frakL:'Frakinator ratio for your rally (optional)', frakNote:'Enter the % split Frakinator suggests. Leave blank to send everything left.',
+      rallySizeL:'Rally march size (optional)', rallySizeNote:'Leave blank to use as many troops as the ratio allows.',
+      frakSum:'Ratio adds up to {s}% — it must total 100%.',
+      leadFrak:"Built from what's left after the joins, at your Frakinator ratio {r}.",
+      leadShortCap:'To fill {cap} at this ratio you need <b>{list}</b>.', copyLeadFrak:'Lead rally ({r}): ',
     },
     fr: {
       locale:'fr-FR', html:'fr', docTitle:'Planificateur Piège à ours',
@@ -301,6 +326,11 @@
       copyCalc:'Calculateur de ratio : ',
       arcWarn:'Pas assez d\'archers pour votre propre rassemblement : il n\'en reste que <b>{have}</b>, moins que les <b>{join}</b> de chaque marche de renfort. Il vous faut <b>+{need}</b> archers pour égaler une marche de renfort.',
       canFillLow:'✓ renforts OK · rassemblement court en archers',
+      frakL:'Ratio Frakinator pour votre rassemblement (facultatif)', frakNote:'Saisissez la répartition en % suggérée par Frakinator. Laissez vide pour envoyer tout le reste.',
+      rallySizeL:'Taille de la marche de rassemblement (facultatif)', rallySizeNote:'Laissez vide pour utiliser autant de troupes que le ratio le permet.',
+      frakSum:'Le ratio totalise {s} % — il doit faire 100 %.',
+      leadFrak:'Composé avec ce qui reste après les renforts, au ratio Frakinator {r}.',
+      leadShortCap:'Pour remplir {cap} à ce ratio, il vous faut <b>{list}</b>.', copyLeadFrak:'Rassemblement ({r}) : ',
     },
     es: {
       locale:'es-ES', html:'es', docTitle:'Planificador Trampa para osos',
@@ -337,6 +367,11 @@
       copyCalc:'Calculadora de ratio: ',
       arcWarn:'No hay suficientes arqueros para tu propio rally: solo quedan <b>{have}</b>, menos que los <b>{join}</b> de cada marcha de unión. Necesitas <b>+{need}</b> arqueros para igualar una marcha de unión.',
       canFillLow:'✓ uniones OK · rally corto de arqueros',
+      frakL:'Ratio de Frakinator para tu rally (opcional)', frakNote:'Introduce el reparto en % que sugiere Frakinator. Déjalo vacío para enviar todo lo que sobra.',
+      rallySizeL:'Tamaño de la marcha del rally (opcional)', rallySizeNote:'Déjalo vacío para usar tantas tropas como permita el ratio.',
+      frakSum:'El ratio suma {s}% — debe sumar 100%.',
+      leadFrak:'Formado con lo que sobra tras las uniones, con tu ratio de Frakinator {r}.',
+      leadShortCap:'Para llenar {cap} con este ratio necesitas <b>{list}</b>.', copyLeadFrak:'Rally propio ({r}): ',
     },
     pt: {
       locale:'pt-BR', html:'pt', docTitle:'Planejador Armadilha do Urso',
@@ -373,6 +408,11 @@
       copyCalc:'Calculadora de proporção: ',
       arcWarn:'Arqueiros insuficientes para o seu próprio rally: restam só <b>{have}</b>, menos que os <b>{join}</b> de cada marcha de apoio. Você precisa de <b>+{need}</b> arqueiros para igualar uma marcha de apoio.',
       canFillLow:'✓ apoios OK · rally com poucos arqueiros',
+      frakL:'Proporção do Frakinator para seu rally (opcional)', frakNote:'Informe a divisão em % sugerida pelo Frakinator. Deixe em branco para enviar tudo o que sobrou.',
+      rallySizeL:'Tamanho da marcha do rally (opcional)', rallySizeNote:'Deixe em branco para usar o máximo de tropas que a proporção permitir.',
+      frakSum:'A proporção soma {s}% — precisa somar 100%.',
+      leadFrak:'Montado com o que sobra depois dos apoios, na proporção do Frakinator {r}.',
+      leadShortCap:'Para preencher {cap} nessa proporção você precisa de <b>{list}</b>.', copyLeadFrak:'Rally próprio ({r}): ',
     },
     ar: {
       locale:'ar-u-nu-latn', html:'ar', dir:'rtl', docTitle:'مخطط فخ الدب',
@@ -409,6 +449,11 @@
       copyCalc:'حاسبة نسبة الحشد: ',
       arcWarn:'لا يوجد رماة كافون لحشدك: تبقّى <b>{have}</b> فقط، أقل من <b>{join}</b> في كل مسيرة انضمام. تحتاج إلى <b>+{need}</b> رماة لتعادل مسيرة انضمام.',
       canFillLow:'✓ الانضمام مكتمل · رماة الحشد قليلون',
+      frakL:'نسبة Frakinator لحشدك (اختياري)', frakNote:'أدخل التقسيم بالنسب المئوية الذي يقترحه Frakinator. اتركه فارغاً لإرسال كل ما تبقى.',
+      rallySizeL:'حجم مسيرة الحشد (اختياري)', rallySizeNote:'اتركه فارغاً لاستخدام أكبر عدد من القوات تسمح به النسبة.',
+      frakSum:'مجموع النسبة {s}% — يجب أن يكون 100%.',
+      leadFrak:'مبني مما تبقى بعد مسيرات الانضمام، بنسبة Frakinator ‏{r}.',
+      leadShortCap:'لملء {cap} بهذه النسبة تحتاج إلى <b>{list}</b>.', copyLeadFrak:'حشدي ({r}): ',
     },
   };
 
@@ -462,6 +507,7 @@
   group('marches', v => state.marches = +v);
   group('gen', v => { state.gen = v; state.pick = null; });
   ['inf','cav','arc'].forEach(id => $(id).addEventListener('input', () => { state.pick = null; update(); }));
+  ['fInf','fCav','fArc','rallySize'].forEach(id => $(id).addEventListener('input', update));
 
   // ---------- core math ----------
   function atRatio(size, r){
@@ -499,8 +545,33 @@
     return { m, short, ok, left, t };
   }
 
+  // Frakinator ratio for your own rally: null = not set, {bad:sum} = doesn't add up, else {inf,cav,arc}.
+  function frakRatio(){
+    const v = ['fInf','fCav','fArc'].map(id => $(id).value.trim());
+    if (v.every(x => x === '')) return null;
+    const [inf, cav, arc] = v.map(x => Math.max(0, parseFloat(x) || 0));
+    const s = inf + cav + arc;
+    if (Math.abs(s - 100) > 0.5) return { bad:+s.toFixed(1) };
+    return { inf:inf / s * 100, cav:cav / s * 100, arc:arc / s * 100 };
+  }
+  // Biggest rally march at exactly ratio r that `left` can fill, capped at `cap` if given.
+  function rallyAt(r, left, cap){
+    let size = Infinity;
+    for (const k of ['inf','cav','arc']) if (r[k] > 0) size = Math.min(size, Math.floor(left[k] / (r[k] / 100)));
+    if (!isFinite(size)) size = 0;
+    if (cap) size = Math.min(size, cap);
+    let m = atRatio(size, r);
+    // rounding guard: never use more than you have
+    while (size > 0 && (m.inf > left.inf || m.cav > left.cav || m.arc > left.arc)){ size--; m = atRatio(size, r); }
+    return m;
+  }
+  const rStr = r => `${+r.inf.toFixed(1)} / ${+r.cav.toFixed(1)} / ${+r.arc.toFixed(1)}`;
+
   function update(){
     const t = { inf:num('inf'), cav:num('cav'), arc:num('arc') };
+    $('frakFields').style.display = state.rally ? 'block' : 'none';
+    const fr = frakRatio();
+    $('frakErr').textContent = fr && fr.bad !== undefined ? T('frakSum', {s:fr.bad}) : '';
     const n = state.marches;
     const joins = n; // lead rally is an extra march on top
     const genKey = state.gen;
@@ -542,7 +613,7 @@
         if (o.isGen) tag = `<span class="tag ${o.p.ok ? 'rec' : 'alt'}">${T('tagTarget')}</span>`;
         desc = T('needDesc', {arc:fmt(m.arc*joins), cav:fmt(m.cav*joins), inf:fmt(m.inf*joins), j:joins, cap:fmt(CAP), after:keep(m)});
       }
-      const low = state.rally && o.p.ok && o.p.left.arc < m.arc;
+      const fOk = frakRatio(); const low = state.rally && o.p.ok && !(fOk && fOk.bad === undefined) && o.p.left.arc < m.arc;
       const status = low ? `<span class="status low">${T('canFillLow')}</span>`
                    : o.p.ok ? `<span class="status ok">${T('canFill')}</span>`
                             : `<span class="status need">${T('need', {list:shortTxt(o.p.short).join(', ')})}</span>`;
@@ -558,8 +629,13 @@
 
   function renderManifest(o, joins){
     const p = o.p, m = p.m, per = sum(m);
-    const lead = state.rally && p.ok ? p.left : null; // remaining troops for your own rally
-    const arcWarn = lead && lead.arc < m.arc
+    const fr0 = frakRatio(), fr = fr0 && fr0.bad === undefined ? fr0 : null;
+    const rallyCap = num('rallySize');
+    // remaining troops for your own rally — at the Frakinator ratio if one is set
+    const lead = state.rally && p.ok ? (fr ? rallyAt(fr, p.left, rallyCap) : p.left) : null;
+    const after = lead ? minus(p.left, lead) : p.left;
+    const capShort = fr && lead && rallyCap && sum(lead) < rallyCap ? shortTxt(shortOf(atRatio(rallyCap, fr), p.left, 1)) : [];
+    const arcWarn = !fr && lead && lead.arc < m.arc
       ? `<div class="msg warn">⚠ ${T('arcWarn', {have:fmt(lead.arc), join:fmt(m.arc), need:fmt(m.arc - lead.arc)})}</div>` : '';
 
     const msgs = [];
@@ -570,7 +646,7 @@
       const off = o.fit ? T('off') : '';
       msgs.push(`<div class="msg ${per < CAP || o.fit ? 'warn' : 'ok'}">${T('joinsMsg', {how:T('joinsFirst'), off, under})}</div>`);
       if (arcWarn) msgs.push(arcWarn);
-      if (!state.rally) msgs.push(`<div class="msg ok" style="opacity:.85">${T('reserve', {inf:fmt(p.left.inf), cav:fmt(p.left.cav), arc:fmt(p.left.arc)})}</div>`);
+      if (!state.rally || fr) msgs.push(`<div class="msg ok" style="opacity:.85">${T('reserve', {inf:fmt(after.inf), cav:fmt(after.cav), arc:fmt(after.arc)})}</div>`);
     }
     $('status').innerHTML = msgs.join('');
 
@@ -596,9 +672,10 @@
     if (state.rally){
       const x = lead || { inf:0, cav:0, arc:0 };
       html += `<div class="march lead">
-        <div class="head"><span class="name">${T('leadName')}</span><span class="cap">${fmt(sum(x))}</span></div>
-        <p class="lead-note">${T(lead ? 'leadRemain' : 'leadEmpty')}</p>
+        <div class="head"><span class="name">${T('leadName')}</span><span class="cap">${fmt(sum(x))}${fr && rallyCap ? ' / ' + fmt(rallyCap) : ''}</span></div>
+        <p class="lead-note">${!lead ? T('leadEmpty') : fr ? T('leadFrak', {r:`<bdi>${rStr(fr)}</bdi>`}) : T('leadRemain')}</p>
         ${lead ? bar(x, sum(x)) + breakdown(x) : ''}
+        ${capShort.length ? `<div class="msg warn" style="margin:11px 0 0">${T('leadShortCap', {cap:fmt(rallyCap), list:capShort.join(', ')})}</div>` : ''}
         ${arcWarn ? arcWarn.replace('msg warn', 'msg warn" style="margin:11px 0 0') : ''}
         <a class="calc" href="${CALC_URL}" target="_blank" rel="noopener noreferrer">${T('calcLink')}</a>
       </div>`;
@@ -609,7 +686,7 @@
     const text = [
       T('copyHead', {j:joins, plus:state.rally ? T('copyPlus') : ''}),
       T('copyEach', {r:ratio}) + line(m),
-      lead ? T('copyLead') + line(lead) : '',
+      lead ? (fr ? T('copyLeadFrak', {r:rStr(fr)}) : T('copyLead')) + line(lead) : '',
       state.rally ? T('copyCalc') + CALC_URL : '',
     ].filter(Boolean).join('\n');
     $('copyBtn').onclick = () => {
