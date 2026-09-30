@@ -137,6 +137,8 @@
   .frak.grid3{ grid-template-columns:repeat(3,1fr); gap:10px; }
   label.mini{ font-size:11px; letter-spacing:.6px; }
   .frak-err{ color:#e0968a; }
+  .copybox{ width:100%; margin-top:10px; background:var(--bg); color:var(--parchment); border:1px solid var(--gold); border-radius:5px; padding:10px 12px; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.5; resize:vertical; }
+  .copybox[hidden]{ display:none; }
   .footnote{ text-align:center; font-size:12px; color:var(--dim); margin-top:28px; line-height:1.6; }
 </style>
 </head>
@@ -211,7 +213,10 @@
     </div>
     <div class="field">
       <label data-i="capL"></label>
-      <div class="fixed" id="capVal">90,000</div>
+      <div class="row">
+        <button class="pill active" data-cap="90000" id="cap90">90,000</button>
+        <button class="pill" data-cap="100000" id="cap100">100,000</button>
+      </div>
       <div class="note" data-i="capNote"></div>
     </div>
   </div>
@@ -243,6 +248,7 @@
     </div>
     <div id="marchList"></div>
     <button class="copy" id="copyBtn" data-i="copy"></button>
+    <textarea id="copyBox" class="copybox" readonly hidden></textarea>
   </div>
 
   <p class="footnote" data-i="footnote"></p>
@@ -257,11 +263,11 @@
       s1:'Troops available', inf:'Infantry', cav:'Cavalry', arc:'Archers', infL:'infantry', cavL:'cavalry', arcL:'archers', eg:'e.g.',
       s2:'Rally & marches', leadQ:'Will you also lead a rally?',
       no:'No', noSub:"Joining others' rallies only", yes:'Yes', yesSub:'Plus one extra march leading your own rally',
-      marchQ:'How many join marches can you send?', capL:'Join march capacity', capNote:'Max per join march — fixed.',
+      marchQ:'How many join marches can you send?', capL:'Join march capacity', capNote:'Max troops per join march.',
       s3:'Formation ratio', hint:"Pick the ratio you want to run (Infantry / Cavalry / Archers). The others stay listed, with how many troops you'd need for each.",
       targetL:'Target ratio · Inf / Cav / Arc', empty:'Enter your troop counts above to see ratios.',
       s4:'Your manifest', statPer:'Per join march', statTotal:'Troops committed',
-      copy:'Copy manifest for alliance chat', copied:'Copied ✓',
+      copy:'Copy manifest for alliance chat', copied:'Copied ✓', copyManual:'Copy blocked here — select the text below and copy it',
       footnote:'Every march uses the same ratio so each one hits the bear at full strength. Hero gear, lethality and research still matter — use this as your split, then fine-tune in the march preview.',
       infS:'Inf', cavS:'Cav', arcS:'Arc',
       marchNoteRally:'{j} join marches + 1 lead rally', marchNoteJoin:'{n} join marches',
@@ -285,6 +291,7 @@
       copyCalc:'Rally ratio calculator: ',
       arcWarn:'Not enough archers for your own rally: only <b>{have}</b> left, fewer than the <b>{join}</b> in each join march. You need <b>+{need}</b> archers to match a join march.',
       canFillLow:'✓ fills joins · rally low on archers',
+      tagRoom:'Fits joins + rally', roomDesc:'Leaves enough for a full {cap} rally at your Frakinator ratio {r} — {j} join marches of {per}.', canFillRally:'✓ joins · rally needs {list}',
       frakL:'Frakinator ratio for your rally (optional)', frakNote:'Enter the % split Frakinator suggests. Leave blank to send everything left.',
       rallySizeL:'Rally march size (optional)', rallySizeNote:'Leave blank to use as many troops as the ratio allows.',
       frakSum:'Ratio adds up to {s}% — it must total 100%.',
@@ -298,11 +305,11 @@
       s1:'Troupes disponibles', inf:'Infanterie', cav:'Cavalerie', arc:'Archers', infL:'infanterie', cavL:'cavalerie', arcL:'archers', eg:'ex.',
       s2:'Rassemblement et marches', leadQ:'Allez-vous aussi lancer un rassemblement ?',
       no:'Non', noSub:'Rejoindre uniquement les rassemblements des autres', yes:'Oui', yesSub:'Plus une marche en plus pour mener votre rassemblement',
-      marchQ:'Combien de marches de renfort pouvez-vous envoyer ?', capL:"Capacité d'une marche de renfort", capNote:'Maximum par marche de renfort — fixe.',
+      marchQ:'Combien de marches de renfort pouvez-vous envoyer ?', capL:"Capacité d'une marche de renfort", capNote:'Troupes max par marche de renfort.',
       s3:'Ratio de formation', hint:'Choisissez le ratio à utiliser (Infanterie / Cavalerie / Archers). Les autres restent affichés, avec les troupes nécessaires pour chacun.',
       targetL:'Ratio cible · Inf / Cav / Arc', empty:'Saisissez vos troupes ci-dessus pour voir les ratios.',
       s4:'Votre composition', statPer:'Par marche de renfort', statTotal:'Troupes engagées',
-      copy:"Copier pour le chat d'alliance", copied:'Copié ✓',
+      copy:"Copier pour le chat d'alliance", copied:'Copié ✓', copyManual:'Copie bloquée ici — sélectionnez le texte ci-dessous et copiez-le',
       footnote:"Chaque marche utilise le même ratio pour frapper l'ours à pleine puissance. L'équipement des héros, la létalité et la recherche comptent toujours — partez de cette répartition, puis ajustez dans l'aperçu de marche.",
       infS:'Inf', cavS:'Cav', arcS:'Arc',
       marchNoteRally:'{j} marches de renfort + 1 rassemblement', marchNoteJoin:'{n} marches de renfort',
@@ -326,6 +333,7 @@
       copyCalc:'Calculateur de ratio : ',
       arcWarn:'Pas assez d\'archers pour votre propre rassemblement : il n\'en reste que <b>{have}</b>, moins que les <b>{join}</b> de chaque marche de renfort. Il vous faut <b>+{need}</b> archers pour égaler une marche de renfort.',
       canFillLow:'✓ renforts OK · rassemblement court en archers',
+      tagRoom:'Renforts + rassemblement', roomDesc:'Laisse assez pour un rassemblement complet de {cap} au ratio Frakinator {r} — {j} marches de renfort de {per}.', canFillRally:'✓ renforts · il manque {list} au rassemblement',
       frakL:'Ratio Frakinator pour votre rassemblement (facultatif)', frakNote:'Saisissez la répartition en % suggérée par Frakinator. Laissez vide pour envoyer tout le reste.',
       rallySizeL:'Taille de la marche de rassemblement (facultatif)', rallySizeNote:'Laissez vide pour utiliser autant de troupes que le ratio le permet.',
       frakSum:'Le ratio totalise {s} % — il doit faire 100 %.',
@@ -339,11 +347,11 @@
       s1:'Tropas disponibles', inf:'Infantería', cav:'Caballería', arc:'Arqueros', infL:'infantería', cavL:'caballería', arcL:'arqueros', eg:'ej.',
       s2:'Rally y marchas', leadQ:'¿También vas a liderar un rally?',
       no:'No', noSub:'Solo unirme a rallies de otros', yes:'Sí', yesSub:'Más una marcha extra que lidera tu propio rally',
-      marchQ:'¿Cuántas marchas de unión puedes enviar?', capL:'Capacidad de marcha de unión', capNote:'Máximo por marcha de unión — fijo.',
+      marchQ:'¿Cuántas marchas de unión puedes enviar?', capL:'Capacidad de marcha de unión', capNote:'Tropas máximas por marcha de unión.',
       s3:'Ratio de formación', hint:'Elige el ratio que quieres usar (Infantería / Caballería / Arqueros). Los demás siguen visibles, con las tropas que necesitarías para cada uno.',
       targetL:'Ratio objetivo · Inf / Cab / Arq', empty:'Introduce tus tropas arriba para ver los ratios.',
       s4:'Tu formación', statPer:'Por marcha de unión', statTotal:'Tropas enviadas',
-      copy:'Copiar para el chat de alianza', copied:'Copiado ✓',
+      copy:'Copiar para el chat de alianza', copied:'Copiado ✓', copyManual:'Copia bloqueada aquí — selecciona el texto de abajo y cópialo',
       footnote:'Cada marcha usa el mismo ratio para golpear al oso con toda su fuerza. El equipo de héroes, la letalidad y la investigación siguen importando — úsalo como base y ajusta en la vista previa de la marcha.',
       infS:'Inf', cavS:'Cab', arcS:'Arq',
       marchNoteRally:'{j} marchas de unión + 1 rally propio', marchNoteJoin:'{n} marchas de unión',
@@ -367,6 +375,7 @@
       copyCalc:'Calculadora de ratio: ',
       arcWarn:'No hay suficientes arqueros para tu propio rally: solo quedan <b>{have}</b>, menos que los <b>{join}</b> de cada marcha de unión. Necesitas <b>+{need}</b> arqueros para igualar una marcha de unión.',
       canFillLow:'✓ uniones OK · rally corto de arqueros',
+      tagRoom:'Uniones + rally', roomDesc:'Deja suficiente para un rally completo de {cap} con tu ratio de Frakinator {r} — {j} marchas de unión de {per}.', canFillRally:'✓ uniones · al rally le faltan {list}',
       frakL:'Ratio de Frakinator para tu rally (opcional)', frakNote:'Introduce el reparto en % que sugiere Frakinator. Déjalo vacío para enviar todo lo que sobra.',
       rallySizeL:'Tamaño de la marcha del rally (opcional)', rallySizeNote:'Déjalo vacío para usar tantas tropas como permita el ratio.',
       frakSum:'El ratio suma {s}% — debe sumar 100%.',
@@ -380,11 +389,11 @@
       s1:'Tropas disponíveis', inf:'Infantaria', cav:'Cavalaria', arc:'Arqueiros', infL:'infantaria', cavL:'cavalaria', arcL:'arqueiros', eg:'ex.',
       s2:'Rally e marchas', leadQ:'Você também vai liderar um rally?',
       no:'Não', noSub:'Só entrar nos rallies dos outros', yes:'Sim', yesSub:'Mais uma marcha extra liderando seu próprio rally',
-      marchQ:'Quantas marchas de apoio você pode enviar?', capL:'Capacidade da marcha de apoio', capNote:'Máximo por marcha de apoio — fixo.',
+      marchQ:'Quantas marchas de apoio você pode enviar?', capL:'Capacidade da marcha de apoio', capNote:'Máximo de tropas por marcha de apoio.',
       s3:'Proporção da formação', hint:'Escolha a proporção que quer usar (Infantaria / Cavalaria / Arqueiros). As outras continuam listadas, com quantas tropas você precisaria para cada uma.',
       targetL:'Proporção alvo · Inf / Cav / Arq', empty:'Informe suas tropas acima para ver as proporções.',
       s4:'Sua formação', statPer:'Por marcha de apoio', statTotal:'Tropas enviadas',
-      copy:'Copiar para o chat da aliança', copied:'Copiado ✓',
+      copy:'Copiar para o chat da aliança', copied:'Copiado ✓', copyManual:'Cópia bloqueada aqui — selecione o texto abaixo e copie',
       footnote:'Toda marcha usa a mesma proporção para atingir o urso com força total. Equipamento de heróis, letalidade e pesquisa ainda importam — use isto como base e ajuste na prévia da marcha.',
       infS:'Inf', cavS:'Cav', arcS:'Arq',
       marchNoteRally:'{j} marchas de apoio + 1 rally próprio', marchNoteJoin:'{n} marchas de apoio',
@@ -408,6 +417,7 @@
       copyCalc:'Calculadora de proporção: ',
       arcWarn:'Arqueiros insuficientes para o seu próprio rally: restam só <b>{have}</b>, menos que os <b>{join}</b> de cada marcha de apoio. Você precisa de <b>+{need}</b> arqueiros para igualar uma marcha de apoio.',
       canFillLow:'✓ apoios OK · rally com poucos arqueiros',
+      tagRoom:'Apoios + rally', roomDesc:'Deixa o suficiente para um rally completo de {cap} na proporção do Frakinator {r} — {j} marchas de apoio de {per}.', canFillRally:'✓ apoios · faltam {list} no rally',
       frakL:'Proporção do Frakinator para seu rally (opcional)', frakNote:'Informe a divisão em % sugerida pelo Frakinator. Deixe em branco para enviar tudo o que sobrou.',
       rallySizeL:'Tamanho da marcha do rally (opcional)', rallySizeNote:'Deixe em branco para usar o máximo de tropas que a proporção permitir.',
       frakSum:'A proporção soma {s}% — precisa somar 100%.',
@@ -421,11 +431,11 @@
       s1:'القوات المتاحة', inf:'مشاة', cav:'فرسان', arc:'رماة', infL:'مشاة', cavL:'فرسان', arcL:'رماة', eg:'مثال',
       s2:'الحشد والمسيرات', leadQ:'هل ستقود حشداً أيضاً؟',
       no:'لا', noSub:'الانضمام إلى حشود الآخرين فقط', yes:'نعم', yesSub:'مسيرة إضافية لقيادة حشدك الخاص',
-      marchQ:'كم مسيرة انضمام يمكنك إرسالها؟', capL:'سعة مسيرة الانضمام', capNote:'الحد الأقصى لكل مسيرة انضمام — ثابت.',
+      marchQ:'كم مسيرة انضمام يمكنك إرسالها؟', capL:'سعة مسيرة الانضمام', capNote:'الحد الأقصى للقوات في كل مسيرة انضمام.',
       s3:'نسبة التشكيل', hint:'اختر النسبة التي تريد استخدامها (مشاة / فرسان / رماة). تبقى النسب الأخرى ظاهرة مع عدد القوات اللازم لكل منها.',
       targetL:'النسبة المستهدفة · مشاة / فرسان / رماة', empty:'أدخل أعداد قواتك أعلاه لعرض النسب.',
       s4:'تشكيلتك', statPer:'لكل مسيرة انضمام', statTotal:'القوات المرسلة',
-      copy:'نسخ التشكيلة لدردشة التحالف', copied:'تم النسخ ✓',
+      copy:'نسخ التشكيلة لدردشة التحالف', copied:'تم النسخ ✓', copyManual:'النسخ محظور هنا — حدّد النص أدناه وانسخه',
       footnote:'كل مسيرة تستخدم النسبة نفسها لتضرب الدب بكامل قوتها. معدات الأبطال والفتك والأبحاث لا تزال مهمة — استخدم هذا كتقسيم أساسي ثم عدّل في معاينة المسيرة.',
       infS:'مشاة', cavS:'فرسان', arcS:'رماة',
       marchNoteRally:'{j} مسيرات انضمام + حشد واحد بقيادتك', marchNoteJoin:'{n} مسيرات انضمام',
@@ -449,6 +459,7 @@
       copyCalc:'حاسبة نسبة الحشد: ',
       arcWarn:'لا يوجد رماة كافون لحشدك: تبقّى <b>{have}</b> فقط، أقل من <b>{join}</b> في كل مسيرة انضمام. تحتاج إلى <b>+{need}</b> رماة لتعادل مسيرة انضمام.',
       canFillLow:'✓ الانضمام مكتمل · رماة الحشد قليلون',
+      tagRoom:'الانضمام + الحشد', roomDesc:'يترك ما يكفي لحشد كامل بسعة {cap} بنسبة Frakinator ‏{r} — {j} مسيرات انضمام بسعة {per}.', canFillRally:'✓ الانضمام · الحشد يحتاج {list}',
       frakL:'نسبة Frakinator لحشدك (اختياري)', frakNote:'أدخل التقسيم بالنسب المئوية الذي يقترحه Frakinator. اتركه فارغاً لإرسال كل ما تبقى.',
       rallySizeL:'حجم مسيرة الحشد (اختياري)', rallySizeNote:'اتركه فارغاً لاستخدام أكبر عدد من القوات تسمح به النسبة.',
       frakSum:'مجموع النسبة {s}% — يجب أن يكون 100%.',
@@ -492,7 +503,7 @@
   };
   const ORDER = ['r60','r70','r80','r89'];
 
-  const CAP = 90000; // max join march size — fixed
+  let CAP = 90000; // max join march size — 90k or 100k
   const CALC_URL = 'https://frakinator.streamlit.app/';
   const state = { rally:false, marches:5, gen:'r80', pick:null };
 
@@ -505,6 +516,7 @@
   }
   group('rally', v => state.rally = v === 'yes');
   group('marches', v => state.marches = +v);
+  group('cap', v => { CAP = +v; state.pick = null; });
   group('gen', v => { state.gen = v; state.pick = null; });
   ['inf','cav','arc'].forEach(id => $(id).addEventListener('input', () => { state.pick = null; update(); }));
   ['fInf','fCav','fArc','rallySize'].forEach(id => $(id).addEventListener('input', update));
@@ -570,13 +582,13 @@
   function update(){
     const t = { inf:num('inf'), cav:num('cav'), arc:num('arc') };
     $('frakFields').style.display = state.rally ? 'block' : 'none';
-    const fr = frakRatio();
-    $('frakErr').textContent = fr && fr.bad !== undefined ? T('frakSum', {s:fr.bad}) : '';
+    const frIn = frakRatio();
+    $('frakErr').textContent = frIn && frIn.bad !== undefined ? T('frakSum', {s:frIn.bad}) : '';
     const n = state.marches;
     const joins = n; // lead rally is an extra march on top
     const genKey = state.gen;
 
-    $('capVal').textContent = fmt(CAP);
+    $('cap90').textContent = fmt(90000); $('cap100').textContent = fmt(100000);
     $('marchNote').textContent = state.rally ? T('marchNoteRally', {j:joins}) : T('marchNoteJoin', {n});
 
     if (!sum(t)){
@@ -596,7 +608,20 @@
       const p = plan(genOpt.r, t, joins, true);
       fit = { key:'fit', r:genOpt.r, p, label:pctStr(p.m), fit:true };
     }
-    const all = fit ? [fit, ...options] : options;
+    // With a Frakinator ratio + rally size: how short is the rally under each option,
+    // and is there a join split that leaves room for a full rally?
+    const fr0 = frakRatio(), fr = fr0 && fr0.bad === undefined ? fr0 : null;
+    const rc = num('rallySize');
+    const rallyNeed = state.rally && fr && rc ? atRatio(rc, fr) : null;
+    const rallyShort = p => rallyNeed && p.ok ? shortTxt(shortOf(rallyNeed, p.left, 1)) : [];
+    let room = null;
+    const base = fit || genOpt;
+    if (rallyNeed && rallyShort(base.p).length && !shortTxt(shortOf(rallyNeed, t, 1)).length){
+      const m = bestFit(CAP, genOpt.r, minus(t, rallyNeed), joins);
+      const p = { m, short:{inf:0,cav:0,arc:0}, ok:true, left:minus(t, m, joins), t };
+      room = { key:'room', r:genOpt.r, p, label:pctStr(m), room:true };
+    }
+    const all = [fit, room].filter(Boolean).concat(options);
     if (!all.some(o => o.key === state.pick)) state.pick = fit ? 'fit' : genKey;
 
     const keep = () => '';
@@ -604,7 +629,10 @@
     all.forEach(o => {
       const m = o.p.m;
       let tag = '', desc;
-      if (o.fit){
+      if (o.room){
+        tag = `<span class="tag rec">${T('tagRoom')}</span>`;
+        desc = T('roomDesc', {cap:fmt(rc), r:`<bdi>${rStr(fr)}</bdi>`, j:joins, per:fmt(sum(m))});
+      } else if (o.fit){
         tag = `<span class="tag rec">${T('tagFit')}</span>`;
         desc = sum(m) < CAP
           ? T('fitUnder', {size:fmt(sum(m)), after:keep(m)})
@@ -613,8 +641,10 @@
         if (o.isGen) tag = `<span class="tag ${o.p.ok ? 'rec' : 'alt'}">${T('tagTarget')}</span>`;
         desc = T('needDesc', {arc:fmt(m.arc*joins), cav:fmt(m.cav*joins), inf:fmt(m.inf*joins), j:joins, cap:fmt(CAP), after:keep(m)});
       }
-      const fOk = frakRatio(); const low = state.rally && o.p.ok && !(fOk && fOk.bad === undefined) && o.p.left.arc < m.arc;
-      const status = low ? `<span class="status low">${T('canFillLow')}</span>`
+      const low = state.rally && o.p.ok && !fr && o.p.left.arc < m.arc;
+      const rs = rallyShort(o.p);
+      const status = rs.length ? `<span class="status low">${T('canFillRally', {list:rs.join(', ')})}</span>`
+                   : low ? `<span class="status low">${T('canFillLow')}</span>`
                    : o.p.ok ? `<span class="status ok">${T('canFill')}</span>`
                             : `<span class="status need">${T('need', {list:shortTxt(o.p.short).join(', ')})}</span>`;
       html += `<button class="opt ${state.pick === o.key ? 'active' : ''}" data-k="${o.key}">
@@ -689,10 +719,20 @@
       lead ? (fr ? T('copyLeadFrak', {r:rStr(fr)}) : T('copyLead')) + line(lead) : '',
       state.rally ? T('copyCalc') + CALC_URL : '',
     ].filter(Boolean).join('\n');
+    $('copyBox').hidden = true;
     $('copyBtn').onclick = () => {
-      const done = () => { $('copyBtn').textContent = T('copied'); setTimeout(() => $('copyBtn').textContent = T('copy'), 1500); };
-      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done).catch(() => prompt('', text));
-      else prompt('', text);
+      const done = () => { $('copyBox').hidden = true; $('copyBtn').textContent = T('copied'); setTimeout(() => $('copyBtn').textContent = T('copy'), 1500); };
+      // Blocked (e.g. inside a preview frame): show the text so it can be copied by hand.
+      const fail = () => { const b = $('copyBox'); b.value = text; b.rows = text.split('\n').length; b.hidden = false; b.focus(); b.select(); $('copyBtn').textContent = T('copyManual'); };
+      let ok = false;
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+        document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove();
+      } catch (e) {}
+      if (ok) return done();
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fail);
+      else fail();
     };
     $('results').style.display = 'block';
   }
